@@ -19,7 +19,7 @@ Few things I think we need to do before we start
     - This API seems very useful for new users, essentially perfect to make tutorial playthrough animations. Depending on the Designers, whether if tutorial-ish feature is included, this API is would be a good candidate. Plus, the demo website seems to have quite a lot of examples, for a low priority feature, it would save a lot of time if we decide to implement a tutorial.
   - https://github.com/toss/es-toolkit
     - This is an utility library, like numpy. I don't this with the scope of this project, this would be that helpful. Since the complexity of the code is probably low, it would only make some codes several lines shorter, it doesn't seems worth it to invest the time to learn this. Basic js should be enough.
-- Work Distribution (I am still think ing how things should be distributed.)
+- Work Distribution (I am still thinking how things should be distributed.)
   - Leo
   - Daniel
   - Genki
