@@ -33,8 +33,8 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 ## Developing Guide
 
 > [!NOTE]
-> For the operations below, you need to have [Node.js](https://nodejs.org/en/download/package-manager) installed on your computer
-> In this project, we use the LTS version (20.18)
+> For the operations below, you need to have [Node.js](https://nodejs.org/en/download/package-manager) installed on your computer.
+> In this project, we use the LTS version (20.18).
 > The commands are executed in the terminal with 'pbl4-2024' as the working directory
 
 ```sh
