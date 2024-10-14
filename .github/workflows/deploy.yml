@@ -1,4 +1,8 @@
-on: workflow_dispatch
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 name: 🚀 Deploy Website
 jobs:
   web-deploy:
