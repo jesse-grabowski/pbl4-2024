@@ -37,7 +37,11 @@ const mapExpanded = ref(false);
           :zoom="15">
         </GoogleMap>
       </div>
-      <input class="map-expanded" type="checkbox" v-model="mapExpanded"/>
+      <label class="map-expanded">
+        <v-icon v-if="mapExpanded" name="fa-compress-arrows-alt" scale="2"/>
+        <v-icon v-if="!mapExpanded" name="fa-expand-arrows-alt" scale="2"/>
+        <input type="checkbox" v-model="mapExpanded"/>
+      </label>
     </div>
   </div>
 </template>
@@ -55,7 +59,7 @@ const mapExpanded = ref(false);
   grid-row-gap: 5px;
 }
 
-.game:has(.map-expanded:checked) {
+.game:has(.map-expanded input:checked) {
   grid-template-columns: 10rem 1fr auto 0fr 1fr 10rem 10rem;
   grid-template-rows: 4.5rem 0fr 1fr min-content 4.5rem;
 }
@@ -119,11 +123,11 @@ const mapExpanded = ref(false);
   grid-column: 5/-1;
   grid-row: 3/5;
 
-  &:has(.map-expanded:checked) .map-border {
+  &:has(.map-expanded input:checked) .map-border {
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%)
   }
 
-  &:has(.map-expanded:checked) .map {
+  &:has(.map-expanded input:checked) .map {
     clip-path: polygon(5px 5px, calc(100% - 5px) 5px, calc(100% - 5px) calc(100% - 5px), 5px calc(100% - 5px))
   }
 }
@@ -149,9 +153,15 @@ const mapExpanded = ref(false);
   left: 0;
   width: 50px;
   height: 50px;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
 
-  &:focus {
-    outline: none;
+  & input {
+    position: absolute;
+    opacity: 0;
   }
 }
 
