@@ -10,13 +10,14 @@
     const response = await fetch(url);
     const data = await response.json();
     
-    let topscores = data.result.map(item => {
+    let topscores = data.result.map((item: any) => {
       const [score, date, time, department, campus] = item.score.split(',');
       return { user: item.user, score, date, time, department, campus };
-    }).sort((a, b) => b.score - a.score).slice(0, 10);
+    }).sort((a: any, b: any) => b.score - a.score).slice(0, 10);
     
-    list.innerHTML = '';
-    topscores.forEach((e, index) => {
+    if (list) {
+      list.innerHTML = '';
+      topscores.forEach((e: any, index: any) => {
       list.innerHTML += `<li>
         <p>${index + 1}</p>
         <p>${e.user}</p>
@@ -24,11 +25,11 @@
         <p>${e.score}</p>
         <p>${e.time}</p>
         <p>${e.department}</p>
-        <p>${e.campus}</p>
-      </li>`;
-    });
+        <p>${e.campus}</p>`
+      });
+    }
+    };
     console.log("Fetched.");
-  }
 
   onMounted(() => {
     fetchData();
