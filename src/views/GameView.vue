@@ -2,10 +2,10 @@
 import { GoogleMap } from 'vue3-google-map'
 import { ref, onMounted, computed } from 'vue'
 import { getRandomInt } from '@/utils/random-support'
+import { readImageFromFile } from '@/utils/file-support'
 import { type Image } from '@/models/image'
 import ImageData from '@/data/ImageData.json'
 
-let baseUrl = ''
 const images: Image[] = ImageData
 
 // we need to include the width and height as hints for the browser to reserve enough space
@@ -20,17 +20,17 @@ const stageText = computed(() => `${guessCount.value} / 10`)
 
 const mapExpanded = ref(false)
 
-function getRandomImage() {
+async function getRandomImage() {
   const random = getRandomInt(0, images.length - 1)
   const randomImage = images[random]
-  imageUrl.value = new URL(randomImage.url, baseUrl).href
+
+  imageUrl.value = await readImageFromFile(randomImage.url)
   imageIsPanorama.value = randomImage.isPanorama
   guessCount.value++
 }
 
 onMounted(async () => {
-  baseUrl = `${window.location.origin}${import.meta.env.BASE_URL}`
-  getRandomImage()
+  await getRandomImage()
 })
 </script>
 
