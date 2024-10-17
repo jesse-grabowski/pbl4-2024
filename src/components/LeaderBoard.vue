@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUpdated } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const id = 'tpbH0M4HiGifjDCgz6Qc';
 const url = `https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/${id}/scores/`;
@@ -19,10 +19,6 @@ async function fetchData() {
 onMounted(() => {
 fetchData();
 });
-
-onUpdated(() => {
-    fetchData();
-})
 </script>
 
 <template>
