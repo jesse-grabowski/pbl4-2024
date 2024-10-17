@@ -19,7 +19,7 @@ const router = createRouter({
     {
       path: '/leaderboard',
       name: 'leaderboard',
-      component: LeaderBoard
+      component: LeaderboardView
     }
   ]
 })
