@@ -3,7 +3,7 @@ import { GoogleMap } from 'vue3-google-map'
 import { ref } from 'vue';
 
 // we need to include the width and height as hints for the browser to reserve enough space
-const imageUrl = new URL('@/assets/images/oic-2.jpg', import.meta.url).href;
+const imageUrl = new URL('@/assets/images/guess/oic-2.jpg', import.meta.url).href;
 const imageWidth = 2560;
 const imageHeight = 1707;
 
@@ -50,7 +50,7 @@ const mapExpanded = ref(false);
 .game {
   flex-grow: 1;
   background-color: aliceblue;
-  
+
   display: grid;
   transition: 300ms;
   grid-template-columns: 10rem 1fr auto 1fr 0fr 10rem 10rem;
