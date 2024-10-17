@@ -22,6 +22,10 @@ const stageText = computed(() => `${guessCount.value} / 10`)
 const mapExpanded = ref(false)
 
 async function getRandomImage() {
+  // a temp return for now because we don't have enough images, after getting 10+ images we can remove this if statement
+  if (guessedImageSet.size === images.length) {
+    return
+  }
   let randomInt
   do {
     randomInt = Chance().integer({ min: 0, max: images.length - 1 })
