@@ -26,9 +26,11 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <style scoped>
 .container {
-  display: flex;
-  flex-direction: column;
+  display: grid;  
+  grid-template-rows: 4rem calc(100vh - 4rem);
+  grid-template-columns: 1fr;
   min-height: 100vh;
+  max-height: 100vh;
 }
 
 header {
@@ -40,7 +42,6 @@ header {
 }
 
 main {
-  flex-grow: 1;
   display: flex;
   align-items: stretch;
   justify-items: stretch;
