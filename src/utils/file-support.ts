@@ -1,4 +1,4 @@
-export async function readFileFromFile(filePath: string): Promise<string> {
+export async function readTextFromFile(filePath: string): Promise<string> {
   try {
     const response = await fetch(filePath)
     return await response.text()
