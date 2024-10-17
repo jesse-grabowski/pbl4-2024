@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { GoogleMap } from 'vue3-google-map'
-import { ref } from 'vue';
 
 // we need to include the width and height as hints for the browser to reserve enough space
 const imageUrl = new URL('@/assets/images/oic-2.jpg', import.meta.url).href;
