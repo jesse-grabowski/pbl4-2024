@@ -1,26 +1,45 @@
 <script setup lang="ts">
 import { GoogleMap } from 'vue3-google-map'
-import { ref } from 'vue';
+import { ref, onMounted, computed } from 'vue'
+import { readJsonFromFile } from '@/utils/file-support'
+import { getRandomInt } from '@/utils/random-support'
+import { type Image } from '@/models/image'
+
+let baseUrl = ''
+let images: Image[]
 
 // we need to include the width and height as hints for the browser to reserve enough space
-const imageUrl = new URL('@/assets/images/guess/oic-2.jpg', import.meta.url).href;
-const imageWidth = 2560;
-const imageHeight = 1707;
+const imageUrl = ref('')
+const imageWidth = 2560
+const imageHeight = 1707
 
-const timerText = "10:00";
-const stageText = "1/10";
+const timerText = '10:00'
+const guessCount = ref(0)
+const stageText = computed(() => `${guessCount.value} / 10`)
 
-const mapExpanded = ref(false);
+const mapExpanded = ref(false)
+
+function getRandomImage() {
+  const random = getRandomInt(0, images.length)
+  imageUrl.value = new URL(images[random].url, baseUrl).href
+  guessCount.value++
+}
+
+onMounted(async () => {
+  baseUrl = `${window.location.origin}${import.meta.env.BASE_URL}`
+  images = await readJsonFromFile<Image[]>(new URL('src/data/ImageData.json', baseUrl).href)
+  getRandomImage()
+})
 </script>
 
 <template>
   <div class="game">
     <div class="image-container">
-      <img :src="imageUrl" :width="imageWidth" :height="imageHeight"/>
+      <img :src="imageUrl" :width="imageWidth" :height="imageHeight" />
     </div>
     <div class="timer game-control" v-text="timerText"></div>
     <div class="stage game-control" v-text="stageText"></div>
-    <button class="guess game-control">Guess</button>
+    <button class="guess game-control" @click="getRandomImage">Guess</button>
     <select class="floor game-control">
       <option>1F</option>
       <option>2F</option>
@@ -31,16 +50,12 @@ const mapExpanded = ref(false);
     </div>
     <div class="map-container">
       <div class="map-border">
-        <GoogleMap
-          class="map"
-          api-key="AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI"
-          :zoom="15">
-        </GoogleMap>
+        <GoogleMap class="map" api-key="AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI" :zoom="15"></GoogleMap>
       </div>
       <label class="map-expanded">
-        <v-icon v-if="mapExpanded" name="fa-compress-arrows-alt" scale="2"/>
-        <v-icon v-if="!mapExpanded" name="fa-expand-arrows-alt" scale="2"/>
-        <input type="checkbox" v-model="mapExpanded"/>
+        <v-icon v-if="mapExpanded" name="fa-compress-arrows-alt" scale="2" />
+        <v-icon v-if="!mapExpanded" name="fa-expand-arrows-alt" scale="2" />
+        <input type="checkbox" v-model="mapExpanded" />
       </label>
     </div>
   </div>
@@ -124,11 +139,11 @@ const mapExpanded = ref(false);
   grid-row: 3/5;
 
   &:has(.map-expanded input:checked) .map-border {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%)
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
   }
 
   &:has(.map-expanded input:checked) .map {
-    clip-path: polygon(5px 5px, calc(100% - 5px) 5px, calc(100% - 5px) calc(100% - 5px), 5px calc(100% - 5px))
+    clip-path: polygon(5px 5px, calc(100% - 5px) 5px, calc(100% - 5px) calc(100% - 5px), 5px calc(100% - 5px));
   }
 }
 
@@ -164,6 +179,4 @@ const mapExpanded = ref(false);
     opacity: 0;
   }
 }
-
-
 </style>

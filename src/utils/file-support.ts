@@ -1,4 +1,4 @@
-export async function readFileFromPublic(filePath: string): Promise<string> {
+export async function readFileFromFile(filePath: string): Promise<string> {
   try {
     const response = await fetch(filePath)
     return await response.text()
@@ -8,7 +8,7 @@ export async function readFileFromPublic(filePath: string): Promise<string> {
   }
 }
 
-export async function readJsonFromPublic<T>(filePath: string): Promise<T> {
+export async function readJsonFromFile<T>(filePath: string): Promise<T> {
   try {
     const response = await fetch(filePath)
     return await response.json()

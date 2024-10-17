@@ -5,7 +5,7 @@
         "latitude": 34.8096057,
         "longitude": 135.5615734,
         "title": "lounge on the first floor in H",
-        "url": "@/assets/images/guess/oic-1.jpg"
+        "url": "src/assets/images/guess/oic-1.jpg"
     },
     {
         "description": "Rei is staring at me",
@@ -13,6 +13,6 @@
         "latitude": 34.8090273,
         "longitude": 135.5615322,
         "title": "H323",
-        "url": "@/assets/images/guess/oic-2.jpg"
+        "url": "src/assets/images/guess/oic-2.jpg"
     }
 ]
