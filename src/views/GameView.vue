@@ -7,6 +7,7 @@ import { type Image } from '@/models/image'
 import ImageData from '@/data/ImageData.json'
 
 const images: Image[] = ImageData
+const guessedImageSet = new Set<number>()
 
 // we need to include the width and height as hints for the browser to reserve enough space
 const imageUrl = ref('')
@@ -21,12 +22,16 @@ const stageText = computed(() => `${guessCount.value} / 10`)
 const mapExpanded = ref(false)
 
 async function getRandomImage() {
-  const random = Chance().integer({ min: 0, max: images.length - 1 })
-  const randomImage = images[random]
+  let randomInt
+  do {
+    randomInt = Chance().integer({ min: 0, max: images.length - 1 })
+  } while (guessedImageSet.has(randomInt))
+  const randomImage = images[randomInt]
 
   imageUrl.value = await readImageFromFile(randomImage.url)
   imageIsPanorama.value = randomImage.isPanorama
   guessCount.value++
+  guessedImageSet.add(randomInt)
 }
 
 onMounted(async () => {
