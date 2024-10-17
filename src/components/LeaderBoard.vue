@@ -4,15 +4,24 @@ import { ref, onMounted } from 'vue';
 const id = 'tpbH0M4HiGifjDCgz6Qc';
 const url = `https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/${id}/scores/`;
 
-const topscores = ref([]);
+interface Record_types {
+    user: string;
+    score: number;
+    date: string;
+    time: string;
+    department: string;
+    campus: string;
+}
+
+const topscores = ref<Record_types[]>([]);
 
 async function fetchData() {
     const response = await fetch(url);
-    const data = await response.json();
+    const data: { result: Array<{ user: string; score: string }> } = await response.json() as { result: Array<{ user: string; score: string }> };
 
-    topscores.value = data.result.map((item: any) => {
-        const [score, date, time, department, campus] = item.score.split(',');
-        return { user: item.user, score: score, date: date, time: time, department: department, campus: campus };
+    topscores.value = data.result.map((record: any) => {
+        const [score, date, time, department, campus] = record.score.split(',');
+        return { user: record.user, score: Number(score), date: date, time: time, department: department, campus: campus };
     }).sort((a: any, b: any) => b.score - a.score).slice(0, 10);
 }
 
@@ -34,7 +43,7 @@ fetchData();
                 <th>Campus</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody v-if="topscores != null">
             <tr v-for="(record, index) in topscores" :key="index">
                 <td>{{ index + 1 }}</td>
                 <td>{{ record.user }}</td>
