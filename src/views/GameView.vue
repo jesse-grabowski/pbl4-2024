@@ -10,10 +10,11 @@ let images: Image[]
 
 // we need to include the width and height as hints for the browser to reserve enough space
 const imageUrl = ref('')
-const imageWidth = 2560
-const imageHeight = 1707
+const imageWidth = ref(2560)
+const imageHeight = ref(1707)
+const imageIsPanorama = ref(true)
 
-const timerText = '10:00'
+const timerText = ref('10:00')
 const guessCount = ref(0)
 const stageText = computed(() => `${guessCount.value} / 10`)
 
@@ -35,7 +36,8 @@ onMounted(async () => {
 <template>
   <div class="game">
     <div class="image-container">
-      <img :src="imageUrl" :width="imageWidth" :height="imageHeight" />
+      <img v-if="!imageIsPanorama" :src="imageUrl" :width="imageWidth" :height="imageHeight" />
+      <v-pannellum v-if="imageIsPanorama" :src="imageUrl"></v-pannellum>
     </div>
     <div class="timer game-control" v-text="timerText"></div>
     <div class="stage game-control" v-text="stageText"></div>
@@ -84,6 +86,12 @@ onMounted(async () => {
   grid-column: 1/-1;
 }
 
+.image-container .vue-pannellum {
+  z-index: 0;
+  height: 100%;
+  width: 100%;
+}
+
 .image-container img {
   object-fit: cover;
   height: 100%;
@@ -95,6 +103,7 @@ onMounted(async () => {
   border-radius: 25px;
   padding: 10px 40px;
   margin: 10px;
+  z-index: 1;
 
   font-weight: bold;
   font-size: 1.25rem;
