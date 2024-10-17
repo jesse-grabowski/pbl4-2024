@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { GoogleMap } from 'vue3-google-map'
 import { ref, onMounted, computed } from 'vue'
-import { getRandomInt } from '@/utils/random-support'
 import { readImageFromFile } from '@/utils/file-support'
+import { Chance } from 'chance'
 import { type Image } from '@/models/image'
 import ImageData from '@/data/ImageData.json'
 
@@ -21,7 +21,7 @@ const stageText = computed(() => `${guessCount.value} / 10`)
 const mapExpanded = ref(false)
 
 async function getRandomImage() {
-  const random = getRandomInt(0, images.length - 1)
+  const random = Chance().integer({ min: 0, max: images.length - 1 })
   const randomImage = images[random]
 
   imageUrl.value = await readImageFromFile(randomImage.url)
