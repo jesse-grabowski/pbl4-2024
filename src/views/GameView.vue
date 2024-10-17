@@ -21,8 +21,10 @@ const stageText = computed(() => `${guessCount.value} / 10`)
 const mapExpanded = ref(false)
 
 function getRandomImage() {
-  const random = getRandomInt(0, images.length)
-  imageUrl.value = new URL(images[random].url, baseUrl).href
+  const random = getRandomInt(0, images.length - 1)
+  const randomImage = images[random]
+  imageUrl.value = new URL(randomImage.url, baseUrl).href
+  imageIsPanorama.value = randomImage.isPanorama
   guessCount.value++
 }
 
