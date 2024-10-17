@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { GoogleMap } from 'vue3-google-map'
 import { ref, onMounted, computed } from 'vue'
-import { readJsonFromFile } from '@/utils/file-support'
 import { getRandomInt } from '@/utils/random-support'
 import { type Image } from '@/models/image'
+import ImageData from '@/data/ImageData.json'
 
 let baseUrl = ''
-let images: Image[]
+const images: Image[] = ImageData
 
 // we need to include the width and height as hints for the browser to reserve enough space
 const imageUrl = ref('')
@@ -30,7 +30,6 @@ function getRandomImage() {
 
 onMounted(async () => {
   baseUrl = `${window.location.origin}${import.meta.env.BASE_URL}`
-  images = await readJsonFromFile<Image[]>(new URL('src/data/ImageData.json', baseUrl).href)
   getRandomImage()
 })
 </script>
