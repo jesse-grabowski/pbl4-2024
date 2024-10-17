@@ -17,7 +17,7 @@ const topscores = ref<Record_types[]>([]);
 
 async function fetchData() {
     const response = await fetch(url);
-    const data: { result: Array<{ user: string; score: string }> } = await response.json() as { result: Array<{ user: string; score: string }> };
+    const data = await response.json();
 
     topscores.value = data.result.map((record: any) => {
         const [score, date, time, department, campus] = record.score.split(',');
