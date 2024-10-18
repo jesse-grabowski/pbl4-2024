@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { GoogleMap } from 'vue3-google-map'
-import { ref, onMounted, computed } from 'vue'
 import { readImageFromFile } from '@/utils/file-support'
 import { Chance } from 'chance'
 import { type Image } from '@/models/image'

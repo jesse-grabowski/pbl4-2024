@@ -5,6 +5,8 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import VueRouter from 'unplugin-vue-router/vite'
+import AutoImport from 'unplugin-auto-import/vite'
+import { VueRouterAutoImports } from 'unplugin-vue-router'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -25,7 +27,7 @@ export default defineConfig({
           },
         },
       ],
-      dts: './src/router.d.ts',
+      dts: 'src/router.d.ts',
       // remove '/' prefix for route name
       getRouteName: routeNode => routeNode.fullPath.slice(1),
       extendRoute: route => {
@@ -38,6 +40,15 @@ export default defineConfig({
     vue(),
     vueJsx(),
     vueDevTools(),
+    AutoImport({
+      imports: [
+        {
+          vue: ['ref', 'onMounted', 'computed'],
+        },
+        VueRouterAutoImports,
+      ],
+      dts: 'src/auto-imports.d.ts',
+    }),
   ],
   resolve: {
     alias: {
