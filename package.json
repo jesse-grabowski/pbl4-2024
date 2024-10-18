@@ -17,6 +17,7 @@
     "oh-vue-icons": "^1.0.0-rc3",
     "pinia": "^2.2.4",
     "vue": "^3.5.11",
+    "vue-pannellum": "^0.5.3",
     "vue-router": "^4.4.5",
     "vue3-google-map": "^0.21.0"
   },
