@@ -18,7 +18,7 @@ async function fetchData() {
 }
 
 onMounted(() => {
-fetchData();
+    async() => await fetchData();
 });
 </script>
 
