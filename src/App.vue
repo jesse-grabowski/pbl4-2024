@@ -10,7 +10,7 @@ import { RouterLink, RouterView } from 'vue-router'
       <nav>
         <ul>
           <li><RouterLink to="/">Home</RouterLink></li>
-          <li>Leaderboards</li>
+          <li><RouterLink to="/leaderboard">Leaderboard</RouterLink></li>
           <li>Settings</li>
           <li>Game Information</li>
           <li>About Us</li>
