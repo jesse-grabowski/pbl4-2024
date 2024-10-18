@@ -15,6 +15,7 @@ export default defineConfig({
     port: 5500,
   },
   plugins: [
+    // Router configuration: https://uvr.esm.is/introduction.html
     VueRouter({
       routesFolder: [
         {
@@ -40,6 +41,7 @@ export default defineConfig({
     vue(),
     vueJsx(),
     vueDevTools(),
+    // AutoImport configuration: https://github.com/unplugin/unplugin-auto-import
     AutoImport({
       imports: [
         {
