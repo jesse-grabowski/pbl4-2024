@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { GoogleMap } from 'vue3-google-map'
+import { GoogleMap , Marker} from "vue3-google-map";
 import { ref, onMounted, computed } from 'vue'
 import { readImageFromFile } from '@/utils/file-support'
 import { Chance } from 'chance'
@@ -15,11 +15,46 @@ const imageWidth = ref(2560)
 const imageHeight = ref(1707)
 const imageIsPanorama = ref(true)
 
+const mapExpanded = ref(false)
+
 const timerText = ref('10:00')
 const guessCount = ref(0)
 const stageText = computed(() => `${guessCount.value} / 10`)
+const apikey = "AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI";
+const OIC_COORD = { lat: 34.81027686919236, lng: 135.56099624838777 }
+const zoomcontrol = false;
+const maptypecontrol = false;
+const streetviewcontrol = false;
+const map_styles = [
+        {
+          featureType: "poi",
+          stylers: [{ visibility: "off" }],
+        },
+        {
+          featureType: "administrative",
+          stylers: [{ visibility: "off" }],
+        },
+        {
+          featureType: "transit",
+          stylers: [{ visibility: "off" }],
+        },
+    ]
 
-const mapExpanded = ref(false)
+let marker_position = OIC_COORD;
+let marker_option = ref({ position: marker_position })
+
+// event: google.maps.MapMouseEvent (This is the type of the event, but there will be import error, set the type to any is fine though)
+function updateMarkerPosition(event: any) {
+      marker_position = {
+        lat: event.latLng?.lat() || 0,
+        lng: event.latLng?.lng() || 0,
+      };
+      marker_option.value = {
+        ... marker_option.value,
+        position: marker_position
+      }
+      console.log(marker_option);
+}
 
 async function getRandomImage() {
   // a temp return for now because we don't have enough images, after getting 10+ images we can remove this if statement
@@ -62,7 +97,18 @@ onMounted(async () => {
     </div>
     <div class="map-container">
       <div class="map-border">
-        <GoogleMap class="map" api-key="AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI" :zoom="15"></GoogleMap>
+        <GoogleMap
+          class="map"
+          :center="OIC_COORD"
+          :api-key="apikey"
+          :styles="map_styles"
+          :zoom-control="zoomcontrol"
+          :map-type-control="maptypecontrol"
+          :street-view-control="streetviewcontrol"
+          :zoom="16"
+          @click="updateMarkerPosition">
+          <Marker id="marker" :options="marker_option" />
+        </GoogleMap>
       </div>
       <label class="map-expanded">
         <v-icon v-if="mapExpanded" name="fa-compress-arrows-alt" scale="2" />
