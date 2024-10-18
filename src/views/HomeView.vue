@@ -22,11 +22,11 @@
 .home {
   flex-grow: 1;
   background-color: aliceblue;
-  background-image: url('@/assets/images/oic-1.jpg');
+  background-image: url('@/assets/images/background_oic.jpg');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  
+
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   grid-template-rows: 1fr auto 1fr;
@@ -48,7 +48,7 @@
   flex-direction: column;
   align-items: stretch;
   gap: 20px;
-  
+
   font-size: 22px;
   color: white;
 }
