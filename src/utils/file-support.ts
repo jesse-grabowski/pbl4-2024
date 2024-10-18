@@ -16,6 +16,7 @@ export async function readFromFile<T>(
 ): Promise<T> {
   try {
     const response = await fetch(filePath)
+    if (!response.ok) throw new Error(`Failed to read file: ${filePath}`)
     return await processResponseAction(response)
   } catch (error) {
     console.error(`Error reading file`, error)
