@@ -1,0 +1,29 @@
+[
+    {
+        "description": "This place is used  for exhibition of university informnation to people",
+        "floor": 1,
+        "isPanorama": false,
+        "latitude": 34.8096057,
+        "longitude": 135.5615734,
+        "title": "lounge on the first floor in H",
+        "url": "src/assets/images/guess/oic-1.jpg"
+    },
+    {
+        "description": "Rei is staring at me",
+        "floor": 3,
+        "isPanorama": false,
+        "latitude": 34.8090273,
+        "longitude": 135.5615322,
+        "title": "H323",
+        "url": "src/assets/images/guess/oic-2.jpg"
+    },
+    {
+        "description": "Outside",
+        "floor": 1,
+        "isPanorama": true,
+        "latitude": 34.8090273,
+        "longitude": 135.5615322,
+        "title": "Outside",
+        "url": "src/assets/images/guess/oic-3.jpg"
+    }
+]
