@@ -1,19 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { type GameRecord } from '../models/record';
 
 const id = 'tpbH0M4HiGifjDCgz6Qc';
 const url = `https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/${id}/scores/`;
 
-interface Record_types {
-    user: string;
-    score: number;
-    date: string;
-    time: string;
-    department: string;
-    campus: string;
-}
-
-const topscores = ref<Record_types[]>([]);
+const topscores = ref<GameRecord[]>([]);
 
 async function fetchData() {
     const response = await fetch(url);
