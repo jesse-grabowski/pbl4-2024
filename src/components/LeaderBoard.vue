@@ -17,8 +17,8 @@ async function fetchData() {
     }).sort((a: any, b: any) => b.score - a.score).slice(0, 10);
 }
 
-onMounted(() => {
-    async() => await fetchData();
+onMounted(async() => {
+    await fetchData();
 });
 </script>
 
