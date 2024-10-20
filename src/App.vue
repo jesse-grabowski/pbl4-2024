@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+import { ModalsContainer } from 'vue-final-modal'
 </script>
 
 <template>
@@ -21,6 +22,8 @@ import { RouterLink, RouterView } from 'vue-router'
     <main>
       <RouterView />
     </main>
+
+    <ModalsContainer/>
   </div>
 </template>
 

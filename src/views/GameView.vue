@@ -2,8 +2,11 @@
 import { GoogleMap } from 'vue3-google-map'
 import { Chance } from 'chance'
 import { type Image } from '@/models/image'
+import { type Guess } from '@/models/guess'
 import ImageData from '@/data/ImageData.json'
 import DynamicImage from '@/components/DynamicImage.vue'
+import { useModal } from 'vue-final-modal'
+import GuessResultsModal from '@/components/GuessResultsModal.vue'
 
 const images: Image[] = ImageData
 const guessedImageSet = new Set<number>()
@@ -15,7 +18,42 @@ const timerText = ref('10:00')
 const guessCount = ref(0)
 const stageText = computed(() => `${guessCount.value} / 10`)
 
+const guess = computed<Guess | undefined>(() => {
+  return {
+    correct: true,
+    distance: 10,
+    time: timerText.value,
+    stage: stageText.value,
+    guess: {
+      latitude: 0,
+      longitude: 0,
+    },
+    actual: {
+      latitude: 0,
+      longitude: 0
+    }
+  };
+});
+
 const mapExpanded = ref(false)
+
+const { open, close } = useModal({
+  component: GuessResultsModal,
+  attrs: {
+    image: image,
+    guess: guess,
+    onConfirm() {
+      close();
+    },
+    onClosed() {
+      getRandomImage();
+    }
+  },
+})
+
+async function doGuess() {
+  open();
+}
 
 async function getRandomImage() {
   // a temp return for now because we don't have enough images, after getting 10+ images we can remove this if statement
@@ -41,7 +79,7 @@ onMounted(async () => {
     <DynamicImage class="image-container" :image="image"/>
     <div class="timer game-control" v-text="timerText"></div>
     <div class="stage game-control" v-text="stageText"></div>
-    <button class="guess game-control" @click="getRandomImage">Guess</button>
+    <button class="guess game-control" @click="doGuess">Guess</button>
     <select class="floor game-control">
       <option>1F</option>
       <option>2F</option>
