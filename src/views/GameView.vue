@@ -3,18 +3,13 @@ import { GoogleMap } from 'vue3-google-map'
 import { Chance } from 'chance'
 import { type Image } from '@/models/image'
 import ImageData from '@/data/ImageData.json'
-import PanoramaImage from '@/components/PanoramaImage.vue'
+import DynamicImage from '@/components/DynamicImage.vue'
 
 const images: Image[] = ImageData
 const guessedImageSet = new Set<number>()
 
 // we need to include the width and height as hints for the browser to reserve enough space
-const imageUrl = ref('')
-const imageWidth = ref(2560)
-const imageHeight = ref(1707)
-const imageIsPanorama = ref(true)
-const imageHaov = ref(0)
-const imageVaov = ref(0)
+const image = ref<Image | undefined>(undefined);
 
 const timerText = ref('10:00')
 const guessCount = ref(0)
@@ -31,12 +26,7 @@ async function getRandomImage() {
   do {
     randomInt = Chance().integer({ min: 0, max: images.length - 1 })
   } while (guessedImageSet.has(randomInt))
-  const randomImage = images[randomInt]
-
-  imageUrl.value = randomImage.url
-  imageIsPanorama.value = randomImage.isPanorama
-  imageHaov.value = randomImage.haov
-  imageVaov.value = randomImage.vaov
+  image.value = images[randomInt]
   guessCount.value++
   guessedImageSet.add(randomInt)
 }
@@ -48,10 +38,7 @@ onMounted(async () => {
 
 <template>
   <div class="game">
-    <div class="image-container">
-      <img v-if="!imageIsPanorama" :src="imageUrl" :width="imageWidth" :height="imageHeight" />
-      <PanoramaImage v-if="imageIsPanorama" :src="imageUrl" :haov="imageHaov" :vaov="imageVaov"/>
-    </div>
+    <DynamicImage class="image-container" :image="image"/>
     <div class="timer game-control" v-text="timerText"></div>
     <div class="stage game-control" v-text="stageText"></div>
     <button class="guess game-control" @click="getRandomImage">Guess</button>
@@ -97,18 +84,6 @@ onMounted(async () => {
 .image-container {
   grid-row: 1/-1;
   grid-column: 1/-1;
-}
-
-.image-container .vue-pannellum {
-  z-index: 0;
-  height: 100%;
-  width: 100%;
-}
-
-.image-container img {
-  object-fit: cover;
-  height: 100%;
-  width: 100%;
 }
 
 .game-control {
