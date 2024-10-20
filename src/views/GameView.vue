@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { GoogleMap } from 'vue3-google-map'
-import { readImageFromFile } from '@/utils/file-support'
 import { Chance } from 'chance'
 import { type Image } from '@/models/image'
 import ImageData from '@/data/ImageData.json'
+import PanoramaImage from '@/components/PanoramaImage.vue'
 
 const images: Image[] = ImageData
 const guessedImageSet = new Set<number>()
@@ -13,6 +13,8 @@ const imageUrl = ref('')
 const imageWidth = ref(2560)
 const imageHeight = ref(1707)
 const imageIsPanorama = ref(true)
+const imageHaov = ref(0)
+const imageVaov = ref(0)
 
 const timerText = ref('10:00')
 const guessCount = ref(0)
@@ -31,8 +33,10 @@ async function getRandomImage() {
   } while (guessedImageSet.has(randomInt))
   const randomImage = images[randomInt]
 
-  imageUrl.value = await readImageFromFile(randomImage.url)
+  imageUrl.value = randomImage.url
   imageIsPanorama.value = randomImage.isPanorama
+  imageHaov.value = randomImage.haov
+  imageVaov.value = randomImage.vaov
   guessCount.value++
   guessedImageSet.add(randomInt)
 }
@@ -46,7 +50,7 @@ onMounted(async () => {
   <div class="game">
     <div class="image-container">
       <img v-if="!imageIsPanorama" :src="imageUrl" :width="imageWidth" :height="imageHeight" />
-      <v-pannellum v-if="imageIsPanorama" :src="imageUrl"></v-pannellum>
+      <PanoramaImage v-if="imageIsPanorama" :src="imageUrl" :haov="imageHaov" :vaov="imageVaov"/>
     </div>
     <div class="timer game-control" v-text="timerText"></div>
     <div class="stage game-control" v-text="stageText"></div>
@@ -79,14 +83,14 @@ onMounted(async () => {
 
   display: grid;
   transition: 300ms;
-  grid-template-columns: 10rem 1fr auto 1fr 0fr 10rem 10rem;
+  grid-template-columns: 12rem 1fr auto 1fr 0fr 12rem 12rem;
   grid-template-rows: 4.5rem 1fr 0fr min-content 4.5rem;
   grid-column-gap: 5px;
   grid-row-gap: 5px;
 }
 
 .game:has(.map-expanded input:checked) {
-  grid-template-columns: 10rem 1fr auto 0fr 1fr 10rem 10rem;
+  grid-template-columns: 12rem 1fr auto 0fr 1fr 12rem 12rem;
   grid-template-rows: 4.5rem 0fr 1fr min-content 4.5rem;
 }
 

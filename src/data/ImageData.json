@@ -6,7 +6,9 @@
         "latitude": 34.8096057,
         "longitude": 135.5615734,
         "title": "lounge on the first floor in H",
-        "url": "src/assets/images/guess/oic-1.jpg"
+        "url": "src/assets/images/guess/oic-1.jpg",
+        "haov": 0,
+        "vaov": 0
     },
     {
         "description": "Rei is staring at me",
@@ -15,7 +17,9 @@
         "latitude": 34.8090273,
         "longitude": 135.5615322,
         "title": "H323",
-        "url": "src/assets/images/guess/oic-2.jpg"
+        "url": "src/assets/images/guess/oic-2.jpg",
+        "haov": 0,
+        "vaov": 0
     },
     {
         "description": "Outside",
@@ -24,6 +28,8 @@
         "latitude": 34.8090273,
         "longitude": 135.5615322,
         "title": "Outside",
-        "url": "src/assets/images/guess/oic-3.jpg"
+        "url": "src/assets/images/guess/oic-3.jpg",
+        "haov": 240,
+        "vaov": 75
     }
 ]
