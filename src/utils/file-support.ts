@@ -1,21 +1,34 @@
 export async function readTextFromFile(filePath: string): Promise<string> {
-  return readFromFile(filePath, async response => await response.text())
+  return readAndProcessFile(filePath, async response => await response.text())
 }
 
 export async function readJsonFromFile<T>(filePath: string): Promise<T> {
-  return readFromFile(filePath, async response => await response.json())
+  return readAndProcessFile(filePath, async response => await response.json())
 }
 
 export async function readImageFromFile(filePath: string): Promise<string> {
-  return readFromFile(filePath, async response => URL.createObjectURL(await response.blob()))
+  const response = await readFromFile(filePath)
+  return URL.createObjectURL(await response.blob())
 }
 
-export async function readFromFile<T>(
+export async function readFromFile(filePath: string): Promise<Response> {
+  try {
+    const response = await fetch(filePath)
+    if (!response.ok) throw new Error(`Failed to read file: ${filePath}`)
+    return response
+  } catch (error) {
+    console.error(`Error reading file`, error)
+    return {} as Response
+  }
+}
+
+export async function readAndProcessFile<T>(
   filePath: string,
   processResponseAction: (response: Response) => Promise<T>,
 ): Promise<T> {
   try {
     const response = await fetch(filePath)
+    if (!response.ok) throw new Error(`Failed to read file: ${filePath}`)
     return await processResponseAction(response)
   } catch (error) {
     console.error(`Error reading file`, error)

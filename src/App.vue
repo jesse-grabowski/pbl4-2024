@@ -26,7 +26,7 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <style scoped>
 .container {
-  display: grid;  
+  display: grid;
   grid-template-rows: 4rem calc(100vh - 4rem);
   grid-template-columns: 1fr;
   min-height: 100vh;
