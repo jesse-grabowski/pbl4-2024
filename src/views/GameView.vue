@@ -1,24 +1,59 @@
 <script setup lang="ts">
 import { GoogleMap } from 'vue3-google-map'
-import { readImageFromFile } from '@/utils/file-support'
 import { Chance } from 'chance'
 import { type Image } from '@/models/image'
+import { type Guess } from '@/models/guess'
 import ImageData from '@/data/ImageData.json'
+import DynamicImage from '@/components/DynamicImage.vue'
+import { useModal } from 'vue-final-modal'
+import GuessResultsModal from '@/components/GuessResultsModal.vue'
 
 const images: Image[] = ImageData
 const guessedImageSet = new Set<number>()
 
 // we need to include the width and height as hints for the browser to reserve enough space
-const imageUrl = ref('')
-const imageWidth = ref(2560)
-const imageHeight = ref(1707)
-const imageIsPanorama = ref(true)
+const image = ref<Image | undefined>(undefined);
 
 const timerText = ref('10:00')
 const guessCount = ref(0)
 const stageText = computed(() => `${guessCount.value} / 10`)
 
+const guess = computed<Guess | undefined>(() => {
+  return {
+    correct: true,
+    distance: 10,
+    time: timerText.value,
+    stage: stageText.value,
+    guess: {
+      latitude: 0,
+      longitude: 0,
+    },
+    actual: {
+      latitude: 0,
+      longitude: 0
+    }
+  };
+});
+
 const mapExpanded = ref(false)
+
+const { open, close } = useModal({
+  component: GuessResultsModal,
+  attrs: {
+    image: image,
+    guess: guess,
+    onConfirm() {
+      close();
+    },
+    onClosed() {
+      getRandomImage();
+    }
+  },
+})
+
+async function doGuess() {
+  open();
+}
 
 async function getRandomImage() {
   // a temp return for now because we don't have enough images, after getting 10+ images we can remove this if statement
@@ -29,10 +64,7 @@ async function getRandomImage() {
   do {
     randomInt = Chance().integer({ min: 0, max: images.length - 1 })
   } while (guessedImageSet.has(randomInt))
-  const randomImage = images[randomInt]
-
-  imageUrl.value = await readImageFromFile(randomImage.url)
-  imageIsPanorama.value = randomImage.isPanorama
+  image.value = images[randomInt]
   guessCount.value++
   guessedImageSet.add(randomInt)
 }
@@ -44,13 +76,10 @@ onMounted(async () => {
 
 <template>
   <div class="game">
-    <div class="image-container">
-      <img v-if="!imageIsPanorama" :src="imageUrl" :width="imageWidth" :height="imageHeight" />
-      <v-pannellum v-if="imageIsPanorama" :src="imageUrl"></v-pannellum>
-    </div>
+    <DynamicImage class="image-container" :image="image"/>
     <div class="timer game-control" v-text="timerText"></div>
     <div class="stage game-control" v-text="stageText"></div>
-    <button class="guess game-control" @click="getRandomImage">Guess</button>
+    <button class="guess game-control" @click="doGuess">Guess</button>
     <select class="floor game-control">
       <option>1F</option>
       <option>2F</option>
@@ -79,32 +108,20 @@ onMounted(async () => {
 
   display: grid;
   transition: 300ms;
-  grid-template-columns: 10rem 1fr auto 1fr 0fr 10rem 10rem;
+  grid-template-columns: 12rem 1fr auto 1fr 0fr 12rem 12rem;
   grid-template-rows: 4.5rem 1fr 0fr min-content 4.5rem;
   grid-column-gap: 5px;
   grid-row-gap: 5px;
 }
 
 .game:has(.map-expanded input:checked) {
-  grid-template-columns: 10rem 1fr auto 0fr 1fr 10rem 10rem;
+  grid-template-columns: 12rem 1fr auto 0fr 1fr 12rem 12rem;
   grid-template-rows: 4.5rem 0fr 1fr min-content 4.5rem;
 }
 
 .image-container {
   grid-row: 1/-1;
   grid-column: 1/-1;
-}
-
-.image-container .vue-pannellum {
-  z-index: 0;
-  height: 100%;
-  width: 100%;
-}
-
-.image-container img {
-  object-fit: cover;
-  height: 100%;
-  width: 100%;
 }
 
 .game-control {

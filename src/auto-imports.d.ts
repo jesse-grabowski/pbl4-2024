@@ -7,6 +7,7 @@
 export {}
 declare global {
   const computed: typeof import('vue')['computed']
+  const defineProps: typeof import('vue')['defineProps']
   const onBeforeRouteLeave: typeof import('vue-router')['onBeforeRouteLeave']
   const onBeforeRouteUpdate: typeof import('vue-router')['onBeforeRouteUpdate']
   const onMounted: typeof import('vue')['onMounted']

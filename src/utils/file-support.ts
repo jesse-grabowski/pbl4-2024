@@ -6,11 +6,6 @@ export async function readJsonFromFile<T>(filePath: string): Promise<T> {
   return readAndProcessFile(filePath, async response => await response.json())
 }
 
-export async function readImageFromFile(filePath: string): Promise<string> {
-  const response = await readFromFile(filePath)
-  return URL.createObjectURL(await response.blob())
-}
-
 export async function readFromFile(filePath: string): Promise<Response> {
   try {
     const response = await fetch(filePath)
