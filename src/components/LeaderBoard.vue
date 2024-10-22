@@ -11,10 +11,10 @@ async function fetchData() {
     const response = await fetch(url);
     const data = await response.json();
 
-    topscores.value = data.result.map((record: any) => {
-        const [score, date, time, department, campus] = record.score.split(',');
+    topscores.value = data.result.map((record: GameRecord) => {
+        const [score, date, time, department, campus] = String(record.score).split(',');
         return { user: record.user, score: Number(score), date: date, time: time, department: department, campus: campus };
-    }).sort((a: any, b: any) => b.score - a.score).slice(0, 10);
+    }).sort((a: GameRecord, b: GameRecord) => b.score - a.score).slice(0, 10);
 }
 
 onMounted(async() => {
