@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { GoogleMap, Marker } from 'vue3-google-map'
 import { Chance } from 'chance'
-import { type Image } from '@/models/image'
-import { type Guess, type Coordinates } from '@/models/guess'
-import { type MapConfig } from '@/models/mapConfig'
 import ImageData from '@/data/image-data'
 import DynamicImage from '@/components/DynamicImage.vue'
 import { useModal } from 'vue-final-modal'
 import GuessResultsModal from '@/components/GuessResultsModal.vue'
+import type { Guess, Coordinates } from '@/models/guess'
+import type { MapConfig } from '@/models/mapConfig'
 
 const images: Image[] = ImageData
 const guessedImageSet = new Set<number>()

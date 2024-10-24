@@ -23,7 +23,7 @@ import { ModalsContainer } from 'vue-final-modal'
       <RouterView />
     </main>
 
-    <ModalsContainer/>
+    <ModalsContainer />
   </div>
 </template>
 
