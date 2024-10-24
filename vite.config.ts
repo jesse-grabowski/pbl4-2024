@@ -28,7 +28,6 @@ export default defineConfig({
           },
         },
       ],
-      dts: 'src/router.d.ts',
       // remove '/' prefix for route name
       getRouteName: routeNode => routeNode.fullPath.slice(1),
       extendRoute: route => {
