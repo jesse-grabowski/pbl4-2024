@@ -19,7 +19,6 @@ const imageWidth = ref(2560)
 const imageHeight = ref(1707)
 const imageIsPanorama = ref(true)
 
-const mapExpanded = ref(false)
 const image = ref<Image | undefined>(undefined);
 
 const timerText = ref('10:00')
