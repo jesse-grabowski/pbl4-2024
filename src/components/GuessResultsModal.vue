@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { VueFinalModal } from 'vue-final-modal'
-import { GoogleMap } from 'vue3-google-map';
+import { GoogleMap, Marker } from 'vue3-google-map';
 import { type Ref } from 'vue';
 import { type Image } from '@/models/image';
 import { type Guess } from '@/models/guess';
@@ -10,11 +10,14 @@ import WrongGuessSound from '@/assets/sounds/wrong-guess.mp3'
 
 const props = defineProps<{
     image?: Ref<Image | undefined>,
-    guess?: Ref<Guess | undefined>
+    guess?: Ref<Guess | undefined>,
+    mapConfig?: Ref<MapConfig | undefined>
 }>()
 
 const imageValue = props.image;
 const guessValue = props.guess;
+const mapConfigValue = props.mapConfig;
+console.log(mapConfigValue);
 
 const correctSound = new Audio(CorrectGuessSound);
 correctSound.loop = false;
@@ -46,10 +49,21 @@ const emit = defineEmits<{
         <div class="guess-results-modal__stage guess-results-modal__game-control">{{ guessValue?.stage }}</div>
         <main class="guess-results-modal__content--main">
             <h1>{{ imageValue?.title }}</h1>
-            <GoogleMap class="guess-results-modal__content--map" api-key="AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI" :zoom="15"></GoogleMap>
+            <GoogleMap
+                class="guess-results-modal__content--map"
+                :center="mapConfigValue?.center"
+                :api-key="mapConfigValue?.apikey"
+                :styles="mapConfigValue?.map_styles"
+                :zoom-control= "mapConfigValue?.zoomcontrol"
+                :map-type-control="mapConfigValue?.maptypecontrol"
+                :street-view-control="mapConfigValue?.streetviewcontrol"
+                :zoom="mapConfigValue?.zoom">
+                <Marker id="marker_guess" :options="{position: guessValue?.guess}" />
+                <Marker id="marker_actual" :options="{position: imageValue?.coordinate}" />
+            </GoogleMap>
             <ConfettiExplosion v-if="guessValue?.correct"/>
             <h2>
-                Your guess was 
+                Your guess was
                 <span :class="guessValue?.correct ? 'guess-results-modal__correct' : 'guess-results-modal__incorrect'">
                     {{ guessValue?.correct ? 'CORRECT' : 'INCORRECT' }}
                 </span>!
@@ -93,7 +107,7 @@ const emit = defineEmits<{
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    
+
     color: white;
 }
 

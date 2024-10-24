@@ -2,7 +2,8 @@
 import { GoogleMap , Marker} from "vue3-google-map";
 import { Chance } from 'chance'
 import { type Image } from '@/models/image'
-import { type Guess } from '@/models/guess'
+import { type Guess, type Coordinates} from '@/models/guess'
+import { type MapConfig } from '@/models/mapConfig'
 import ImageData from '@/data/image-data'
 import DynamicImage from '@/components/DynamicImage.vue'
 import { useModal } from 'vue-final-modal'
@@ -22,6 +23,7 @@ const OIC_COORD = { lat: 34.81027686919236, lng: 135.56099624838777 }
 const zoomcontrol = false;
 const maptypecontrol = false;
 const streetviewcontrol = false;
+const zoom = 16;
 const map_styles = [
         {
           featureType: "poi",
@@ -37,6 +39,7 @@ const map_styles = [
         },
     ];
 let marker_position = OIC_COORD;
+let actual_position = {lat:0, lng:0};
 const marker_option = ref({ position: marker_position });
 
 function updateMarkerPosition(event: any) {
@@ -48,7 +51,6 @@ function updateMarkerPosition(event: any) {
         ... marker_option.value,
         position: marker_position
       }
-      console.log(marker_option);
 }
 
 const guess = computed<Guess | undefined>(() => {
@@ -57,14 +59,19 @@ const guess = computed<Guess | undefined>(() => {
     distance: 10,
     time: timerText.value,
     stage: stageText.value,
-    guess: {
-      latitude: 0,
-      longitude: 0,
-    },
-    actual: {
-      latitude: 0,
-      longitude: 0
-    }
+    guess: marker_position,
+  };
+});
+
+const mapConfig = computed<MapConfig | undefined>(() => {
+  return {
+    apikey: apikey,
+    center: {lat: (marker_position.lat+actual_position.lat)/2, lng: (marker_position.lng+actual_position.lng)/2},
+    zoomcontrol: zoomcontrol,
+    maptypecontrol: maptypecontrol,
+    streetviewcontrol: streetviewcontrol,
+    map_styles: map_styles,
+    zoom: zoom,
   };
 });
 
@@ -75,6 +82,7 @@ const { open, close } = useModal({
   attrs: {
     image: image,
     guess: guess,
+    mapConfig: mapConfig,
     onConfirm() {
       close();
     },
@@ -98,6 +106,7 @@ async function getRandomImage() {
     randomInt = Chance().integer({ min: 0, max: images.length - 1 })
   } while (guessedImageSet.has(randomInt))
   image.value = images[randomInt]
+  actual_position = image.value.coordinate
   guessCount.value++
   guessedImageSet.add(randomInt)
 }
@@ -131,7 +140,7 @@ onMounted(async () => {
           :zoom-control="zoomcontrol"
           :map-type-control="maptypecontrol"
           :street-view-control="streetviewcontrol"
-          :zoom="16"
+          :zoom="zoom"
           @click="updateMarkerPosition">
           <Marker id="marker" :options="marker_option" />
         </GoogleMap>
