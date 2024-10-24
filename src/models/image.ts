@@ -6,4 +6,6 @@ export interface Image {
   latitude: number
   longitude: number
   floor: number
+  haov: number
+  vaov: number
 }

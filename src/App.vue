@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+import { ModalsContainer } from 'vue-final-modal'
 </script>
 
 <template>
@@ -10,7 +11,7 @@ import { RouterLink, RouterView } from 'vue-router'
       <nav>
         <ul>
           <li><RouterLink to="/">Home</RouterLink></li>
-          <li>Leaderboards</li>
+          <li><RouterLink to="/leaderboard">Leaderboard</RouterLink></li>
           <li>Settings</li>
           <li>Game Information</li>
           <li>About Us</li>
@@ -21,12 +22,14 @@ import { RouterLink, RouterView } from 'vue-router'
     <main>
       <RouterView />
     </main>
+
+    <ModalsContainer/>
   </div>
 </template>
 
 <style scoped>
 .container {
-  display: grid;  
+  display: grid;
   grid-template-rows: 4rem calc(100vh - 4rem);
   grid-template-columns: 1fr;
   min-height: 100vh;
