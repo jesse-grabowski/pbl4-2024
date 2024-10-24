@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { GoogleMap } from 'vue3-google-map'
+import { GoogleMap , Marker} from "vue3-google-map";
 import { Chance } from 'chance'
 import { type Image } from '@/models/image'
 import { type Guess } from '@/models/guess'
@@ -17,6 +17,39 @@ const image = ref<Image | undefined>(undefined);
 const timerText = ref('10:00')
 const guessCount = ref(0)
 const stageText = computed(() => `${guessCount.value} / 10`)
+const apikey = "AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI";
+const OIC_COORD = { lat: 34.81027686919236, lng: 135.56099624838777 }
+const zoomcontrol = false;
+const maptypecontrol = false;
+const streetviewcontrol = false;
+const map_styles = [
+        {
+          featureType: "poi",
+          stylers: [{ visibility: "off" }],
+        },
+        {
+          featureType: "administrative",
+          stylers: [{ visibility: "off" }],
+        },
+        {
+          featureType: "transit",
+          stylers: [{ visibility: "off" }],
+        },
+    ];
+let marker_position = OIC_COORD;
+const marker_option = ref({ position: marker_position });
+
+function updateMarkerPosition(event: any) {
+      marker_position = {
+        lat: event.latLng?.lat() || 0,
+        lng: event.latLng?.lng() || 0,
+      };
+      marker_option.value = {
+        ... marker_option.value,
+        position: marker_position
+      }
+      console.log(marker_option);
+}
 
 const guess = computed<Guess | undefined>(() => {
   return {
@@ -90,7 +123,18 @@ onMounted(async () => {
     </div>
     <div class="map-container">
       <div class="map-border">
-        <GoogleMap class="map" api-key="AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI" :zoom="15"></GoogleMap>
+        <GoogleMap
+          class="map"
+          :center="OIC_COORD"
+          :api-key="apikey"
+          :styles="map_styles"
+          :zoom-control="zoomcontrol"
+          :map-type-control="maptypecontrol"
+          :street-view-control="streetviewcontrol"
+          :zoom="16"
+          @click="updateMarkerPosition">
+          <Marker id="marker" :options="marker_option" />
+        </GoogleMap>
       </div>
       <label class="map-expanded">
         <v-icon v-if="mapExpanded" name="fa-compress-arrows-alt" scale="2" />
