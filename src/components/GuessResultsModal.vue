@@ -4,6 +4,9 @@ import { GoogleMap } from 'vue3-google-map';
 import { type Ref } from 'vue';
 import { type Image } from '@/models/image';
 import { type Guess } from '@/models/guess';
+import ConfettiExplosion from "vue-confetti-explosion";
+import CorrectGuessSound from '@/assets/sounds/correct-guess.mp3'
+import WrongGuessSound from '@/assets/sounds/wrong-guess.mp3'
 
 const props = defineProps<{
     image?: Ref<Image | undefined>,
@@ -12,6 +15,16 @@ const props = defineProps<{
 
 const imageValue = props.image;
 const guessValue = props.guess;
+
+const correctSound = new Audio(CorrectGuessSound);
+correctSound.loop = false;
+const wrongSound = new Audio(WrongGuessSound);
+wrongSound.loop = false;
+
+function playSound(correct: boolean | undefined) {
+    const sound = correct ? correctSound : wrongSound;
+    sound.play();
+}
 
 const emit = defineEmits<{
     (e: 'confirm'): void,
@@ -27,16 +40,19 @@ const emit = defineEmits<{
         content-transition="vfm-fade"
         :click-to-close="false"
         :esc-to-close="false"
-        v-on:opened="console.log('test')"
+        v-on:before-open="playSound(guessValue?.correct)"
         v-on:closed="emit('closed')">
         <div class="guess-results-modal__timer guess-results-modal__game-control">{{ guessValue?.time }}</div>
         <div class="guess-results-modal__stage guess-results-modal__game-control">{{ guessValue?.stage }}</div>
         <main class="guess-results-modal__content--main">
             <h1>{{ imageValue?.title }}</h1>
             <GoogleMap class="guess-results-modal__content--map" api-key="AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI" :zoom="15"></GoogleMap>
+            <ConfettiExplosion v-if="guessValue?.correct"/>
             <h2>
                 Your guess was 
-                <span :class="guessValue?.correct ? 'guess-results-modal__correct' : 'guess-results-modal__incorrect'">{{ guessValue?.correct ? 'CORRECT' : 'INCORRECT' }}</span>!
+                <span :class="guessValue?.correct ? 'guess-results-modal__correct' : 'guess-results-modal__incorrect'">
+                    {{ guessValue?.correct ? 'CORRECT' : 'INCORRECT' }}
+                </span>!
                 Your guess was <span :class="guessValue?.correct ? 'guess-results-modal__correct' : 'guess-results-modal__incorrect'">{{ guessValue?.distance }}m</span> away from the correct location.
             </h2>
             <p>{{ imageValue?.description }}</p>
@@ -136,5 +152,9 @@ const emit = defineEmits<{
   margin: 10px;
   grid-row: 3;
   grid-column: 3;
+}
+
+.guess-results-modal__confetti {
+    position: absolute;
 }
 </style>
