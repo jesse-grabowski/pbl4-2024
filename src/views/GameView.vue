@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { GoogleMap , Marker} from "vue3-google-map";
+import { GoogleMap, Marker } from 'vue3-google-map'
 import { Chance } from 'chance'
 import { type Image } from '@/models/image'
-import { type Guess, type Coordinates} from '@/models/guess'
+import { type Guess, type Coordinates } from '@/models/guess'
 import { type MapConfig } from '@/models/mapConfig'
 import ImageData from '@/data/image-data'
 import DynamicImage from '@/components/DynamicImage.vue'
@@ -13,44 +13,44 @@ const images: Image[] = ImageData
 const guessedImageSet = new Set<number>()
 
 // we need to include the width and height as hints for the browser to reserve enough space
-const image = ref<Image | undefined>(undefined);
+const image = ref<Image | undefined>(undefined)
 
 const timerText = ref('10:00')
 const guessCount = ref(0)
 const stageText = computed(() => `${guessCount.value} / 10`)
-const apikey = "AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI";
+const apikey = 'AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI'
 const OIC_COORD = { lat: 34.81027686919236, lng: 135.56099624838777 }
-const zoomcontrol = false;
-const maptypecontrol = false;
-const streetviewcontrol = false;
-const zoom = 16;
+const zoomcontrol = false
+const maptypecontrol = false
+const streetviewcontrol = false
+const zoom = 16
 const map_styles = [
-        {
-          featureType: "poi",
-          stylers: [{ visibility: "off" }],
-        },
-        {
-          featureType: "administrative",
-          stylers: [{ visibility: "off" }],
-        },
-        {
-          featureType: "transit",
-          stylers: [{ visibility: "off" }],
-        },
-    ];
-let marker_position = OIC_COORD;
-let actual_position = {lat:0, lng:0};
-const marker_option = ref({ position: marker_position });
+  {
+    featureType: 'poi',
+    stylers: [{ visibility: 'off' }],
+  },
+  {
+    featureType: 'administrative',
+    stylers: [{ visibility: 'off' }],
+  },
+  {
+    featureType: 'transit',
+    stylers: [{ visibility: 'off' }],
+  },
+]
+let marker_position = OIC_COORD
+let actual_position = { lat: 0, lng: 0 }
+const marker_option = ref({ position: marker_position })
 
-function updateMarkerPosition(event: any) {
-      marker_position = {
-        lat: event.latLng?.lat() || 0,
-        lng: event.latLng?.lng() || 0,
-      };
-      marker_option.value = {
-        ... marker_option.value,
-        position: marker_position
-      }
+function updateMarkerPosition(event: google.maps.MapMouseEvent) {
+  marker_position = {
+    lat: event.latLng?.lat() || 0,
+    lng: event.latLng?.lng() || 0,
+  }
+  marker_option.value = {
+    ...marker_option.value,
+    position: marker_position,
+  }
 }
 
 const guess = computed<Guess | undefined>(() => {
@@ -60,20 +60,23 @@ const guess = computed<Guess | undefined>(() => {
     time: timerText.value,
     stage: stageText.value,
     guess: marker_position,
-  };
-});
+  }
+})
 
 const mapConfig = computed<MapConfig | undefined>(() => {
   return {
     apikey: apikey,
-    center: {lat: (marker_position.lat+actual_position.lat)/2, lng: (marker_position.lng+actual_position.lng)/2},
+    center: {
+      lat: (marker_position.lat + actual_position.lat) / 2,
+      lng: (marker_position.lng + actual_position.lng) / 2,
+    },
     zoomcontrol: zoomcontrol,
     maptypecontrol: maptypecontrol,
     streetviewcontrol: streetviewcontrol,
     map_styles: map_styles,
     zoom: zoom,
-  };
-});
+  }
+})
 
 const mapExpanded = ref(false)
 
@@ -84,16 +87,16 @@ const { open, close } = useModal({
     guess: guess,
     mapConfig: mapConfig,
     onConfirm() {
-      close();
+      close()
     },
     onClosed() {
-      getRandomImage();
-    }
+      getRandomImage()
+    },
   },
 })
 
 async function doGuess() {
-  open();
+  open()
 }
 
 async function getRandomImage() {
@@ -118,7 +121,7 @@ onMounted(async () => {
 
 <template>
   <div class="game">
-    <DynamicImage class="image-container" :image="image"/>
+    <DynamicImage class="image-container" :image="image" />
     <div class="timer game-control" v-text="timerText"></div>
     <div class="stage game-control" v-text="stageText"></div>
     <button class="guess game-control" @click="doGuess">Guess</button>
@@ -141,7 +144,8 @@ onMounted(async () => {
           :map-type-control="maptypecontrol"
           :street-view-control="streetviewcontrol"
           :zoom="zoom"
-          @click="updateMarkerPosition">
+          @click="updateMarkerPosition"
+        >
           <Marker id="marker" :options="marker_option" />
         </GoogleMap>
       </div>
