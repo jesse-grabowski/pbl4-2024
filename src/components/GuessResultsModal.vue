@@ -4,6 +4,7 @@ import { GoogleMap } from 'vue3-google-map';
 import { type Ref } from 'vue';
 import { type Image } from '@/models/image';
 import { type Guess } from '@/models/guess';
+import ConfettiExplosion from "vue-confetti-explosion";
 
 const props = defineProps<{
     image?: Ref<Image | undefined>,
@@ -34,9 +35,12 @@ const emit = defineEmits<{
         <main class="guess-results-modal__content--main">
             <h1>{{ imageValue?.title }}</h1>
             <GoogleMap class="guess-results-modal__content--map" api-key="AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI" :zoom="15"></GoogleMap>
+            <ConfettiExplosion v-if="guessValue?.correct"/>
             <h2>
                 Your guess was 
-                <span :class="guessValue?.correct ? 'guess-results-modal__correct' : 'guess-results-modal__incorrect'">{{ guessValue?.correct ? 'CORRECT' : 'INCORRECT' }}</span>!
+                <span :class="guessValue?.correct ? 'guess-results-modal__correct' : 'guess-results-modal__incorrect'">
+                    {{ guessValue?.correct ? 'CORRECT' : 'INCORRECT' }}
+                </span>!
                 Your guess was <span :class="guessValue?.correct ? 'guess-results-modal__correct' : 'guess-results-modal__incorrect'">{{ guessValue?.distance }}m</span> away from the correct location.
             </h2>
             <p>{{ imageValue?.description }}</p>
@@ -136,5 +140,9 @@ const emit = defineEmits<{
   margin: 10px;
   grid-row: 3;
   grid-column: 3;
+}
+
+.guess-results-modal__confetti {
+    position: absolute;
 }
 </style>
