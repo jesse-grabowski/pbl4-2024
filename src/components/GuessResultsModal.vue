@@ -72,6 +72,10 @@ const emit = defineEmits<{
         <span :class="guessValue?.correct ? 'guess-results-modal__correct' : 'guess-results-modal__incorrect'"
           >{{ guessValue?.distance }}m</span
         >
+        <span v-if="guessValue?.floorDiff != 0">
+           and 
+           <span class="guess-results-modal__incorrect">{{ guessValue?.floorDiff }} floor(s)</span>
+        </span>
         away from the correct location.
       </h2>
       <p>{{ imageValue?.description }}</p>
