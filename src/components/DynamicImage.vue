@@ -1,17 +1,22 @@
 <script setup lang="ts">
-import { type Image } from '@/models/image'
-import PanoramaImage from './PanoramaImage.vue';
+import PanoramaImage from './PanoramaImage.vue'
 
 const props = defineProps<{
-    image?: Image | undefined
+  image?: Image | undefined
 }>()
 </script>
 
 <template>
-    <div v-bind="$attrs" v-if="props.image">
-        <img v-if="!props.image.isPanorama" :src="props.image.url"/>
-        <PanoramaImage v-if="props.image.isPanorama" class="panorama" :src="props.image.url" :haov="props.image.haov" :vaov="props.image.vaov"/>
-    </div>
+  <div v-bind="$attrs" v-if="props.image">
+    <img v-if="!props.image.isPanorama" :src="props.image.url" />
+    <PanoramaImage
+      v-if="props.image.isPanorama"
+      class="panorama"
+      :src="props.image.url"
+      :haov="props.image.haov"
+      :vaov="props.image.vaov"
+    />
+  </div>
 </template>
 
 <style scoped>

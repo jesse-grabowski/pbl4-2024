@@ -1,10 +1,11 @@
+import type { Coordinates } from '@/models/guess'
+
 export interface Image {
   title: string
   description: string
   url: string
   isPanorama: boolean
-  latitude: number
-  longitude: number
+  coordinate: Coordinates
   floor: number
   haov: number
   vaov: number

@@ -15,3 +15,9 @@ declare global {
   const useRoute: typeof import('vue-router')['useRoute']
   const useRouter: typeof import('vue-router')['useRouter']
 }
+// for type re-export
+declare global {
+  // @ts-ignore
+  export type { Image } from '@/models/image'
+  import('@/models/image')
+}
