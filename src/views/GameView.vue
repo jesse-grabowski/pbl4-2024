@@ -180,6 +180,9 @@ const { open, close } = useModal({
 })
 
 async function doGuess() {
+  if(marker_position.lat === 0 && marker_position.lng === 0){
+    return
+  } // disable guess when marker not moved
   evaluate()
   open()
 }
