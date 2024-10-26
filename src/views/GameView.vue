@@ -34,6 +34,7 @@ const zoomcontrol = false
 const maptypecontrol = false
 const streetviewcontrol = false
 const zoom = 16
+const mapTypeId = 'satellite'
 const map_styles = [
   {
     featureType: 'poi',
@@ -147,6 +148,7 @@ const mapConfig = computed<MapConfig | undefined>(() => {
     streetviewcontrol: streetviewcontrol,
     map_styles: map_styles,
     zoom: zoom,
+    mapTypeId: 'satellite',
   }
 })
 
@@ -162,6 +164,7 @@ const { open, close } = useModal({
       close()
     },
     onClosed() {
+      mapExpanded.value = false
       getRandomImage()
     },
   },
@@ -219,6 +222,7 @@ onMounted(async () => {
           :map-type-control="maptypecontrol"
           :street-view-control="streetviewcontrol"
           :zoom="zoom"
+          :mapTypeId="mapTypeId"
           @click="updateMarkerPosition"
         >
           <Marker id="marker" :options="marker_option" />
