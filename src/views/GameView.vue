@@ -33,7 +33,8 @@ const OIC_COORD = { lat: 34.81027686919236, lng: 135.56099624838777 }
 const zoomcontrol = false
 const maptypecontrol = false
 const streetviewcontrol = false
-const zoom = 16
+const initialZoom = 16
+const currentZoom = ref(initialZoom)
 const mapTypeId = 'satellite'
 const map_styles = [
   {
@@ -53,6 +54,15 @@ const map_styles = [
 let marker_position = { lat: 0, lng: 0 }
 let actual_position = { lat: 0, lng: 0 }
 const marker_option = ref({ position: marker_position })
+const mapExpanded = ref(false)
+
+function toggleMapExpansionZoom() {
+  if (mapExpanded.value) {
+    currentZoom.value += 1.4
+  } else {
+    currentZoom.value -= 1.4
+  }
+}
 
 function start_timer() {
   timer.value = 600;
@@ -147,12 +157,11 @@ const mapConfig = computed<MapConfig | undefined>(() => {
     maptypecontrol: maptypecontrol,
     streetviewcontrol: streetviewcontrol,
     map_styles: map_styles,
-    zoom: zoom,
+    zoom: currentZoom.value,
     mapTypeId: 'satellite',
+    tilt: 0,
   }
 })
-
-const mapExpanded = ref(false)
 
 const { open, close } = useModal({
   component: GuessResultsModal,
@@ -221,8 +230,9 @@ onMounted(async () => {
           :zoom-control="zoomcontrol"
           :map-type-control="maptypecontrol"
           :street-view-control="streetviewcontrol"
-          :zoom="zoom"
+          :zoom="currentZoom"
           :mapTypeId="mapTypeId"
+          :tilt="0"
           @click="updateMarkerPosition"
         >
           <Marker id="marker" :options="marker_option" />
@@ -231,7 +241,7 @@ onMounted(async () => {
       <label class="map-expanded">
         <v-icon v-if="mapExpanded" name="fa-compress-arrows-alt" scale="2" />
         <v-icon v-if="!mapExpanded" name="fa-expand-arrows-alt" scale="2" />
-        <input type="checkbox" v-model="mapExpanded" />
+        <input type="checkbox" v-model="mapExpanded" @change="toggleMapExpansionZoom" />
       </label>
     </div>
   </div>
