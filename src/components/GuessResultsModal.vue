@@ -8,6 +8,8 @@ import type { Ref } from 'vue'
 import type { Guess } from '@/models/guess'
 import type { MapConfig } from '@/models/mapConfig'
 
+// const mapTypeId = 'satellite'
+
 const props = defineProps<{
   image?: Ref<Image | undefined>
   guess?: Ref<Guess | undefined>
@@ -59,6 +61,8 @@ const emit = defineEmits<{
         :map-type-control="mapConfigValue?.maptypecontrol"
         :street-view-control="mapConfigValue?.streetviewcontrol"
         :zoom="mapConfigValue?.zoom"
+        :mapTypeId="mapConfigValue?.mapTypeId"
+        :tilt="mapConfigValue?.tilt"
       >
         <Marker id="marker_guess" :options="{ position: guessValue?.guess }" />
         <Marker id="marker_actual" :options="{ position: imageValue?.coordinate }" />
