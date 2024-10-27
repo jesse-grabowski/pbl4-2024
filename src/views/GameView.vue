@@ -100,8 +100,6 @@ function evaluate(){
     result.value = true
   } else result.value = false
 
-  console.log(result.value)
-
   if(guessCount.value == 10){
     totalScore.value *= totalScore.value
   }
