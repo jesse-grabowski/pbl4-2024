@@ -80,7 +80,7 @@ function start_timer() {
 
 function evaluate(){
   floorDiff.value = (Math.abs(Number(selectedFloor.value[0]) - Number(image.value?.floor)))
-  distance.value = getDistance() - 10 * floorDiff.value
+  distance.value = getDistance() + 10 * floorDiff.value
   if(distance.value == 0){
     roundScore.value = 5000
   }
@@ -94,11 +94,13 @@ function evaluate(){
 
   if(floorDiff.value == 0){
     correctFloor.value = true
-  }
+  } else correctFloor.value = false
 
-  if(roundScore.value > score_boundary.value && correctFloor){
+  if(roundScore.value > score_boundary.value && correctFloor.value){
     result.value = true
   } else result.value = false
+
+  console.log(result.value)
 
   if(guessCount.value == 10){
     totalScore.value *= totalScore.value
