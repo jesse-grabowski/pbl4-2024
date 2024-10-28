@@ -8,4 +8,6 @@ export interface MapConfig {
   streetviewcontrol: boolean
   map_styles: google.maps.MapTypeStyle[]
   zoom: number
+  mapTypeId: string
+  tilt: number
 }

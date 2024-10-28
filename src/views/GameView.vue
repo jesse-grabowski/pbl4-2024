@@ -14,15 +14,28 @@ const guessedImageSet = new Set<number>()
 // we need to include the width and height as hints for the browser to reserve enough space
 const image = ref<Image | undefined>(undefined)
 
+const timer = ref(0)
 const timerText = ref('10:00')
 const guessCount = ref(0)
 const stageText = computed(() => `${guessCount.value} / 10`)
+const roundScore = ref(0)
+const totalScore = ref(0)
+
+const distance = ref(0)
+const selectedFloor = ref('1F')
+const floorDiff = ref(0)
+const result = ref(false)
+const correctFloor = ref(false)
+const score_boundary = ref(400) // temporary
+
 const apikey = 'AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI'
 const OIC_COORD = { lat: 34.81027686919236, lng: 135.56099624838777 }
 const zoomcontrol = false
 const maptypecontrol = false
 const streetviewcontrol = false
-const zoom = 16
+const initialZoom = 16
+const currentZoom = ref(initialZoom)
+const mapTypeId = 'satellite'
 const map_styles = [
   {
     featureType: 'poi',
@@ -37,9 +50,79 @@ const map_styles = [
     stylers: [{ visibility: 'off' }],
   },
 ]
-let marker_position = OIC_COORD
+// let marker_position = OIC_COORD
+let marker_position = { lat: 0, lng: 0 }
 let actual_position = { lat: 0, lng: 0 }
 const marker_option = ref({ position: marker_position })
+const mapExpanded = ref(false)
+
+function toggleMapExpansionZoom() {
+  if (mapExpanded.value) {
+    currentZoom.value += 1.4
+  } else {
+    currentZoom.value -= 1.4
+  }
+}
+
+function start_timer() {
+  timer.value = 600;
+  const interval = setInterval(() => {
+    if (timer.value > 0) {
+      timer.value--;
+      const minutes = Math.floor(timer.value / 60);
+      const seconds = timer.value % 60;
+      timerText.value = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    } else {
+      clearInterval(interval);
+    }
+  }, 1000);
+}
+
+function evaluate(){
+  floorDiff.value = (Math.abs(Number(selectedFloor.value[0]) - Number(image.value?.floor)))
+  distance.value = getDistance() + 10 * floorDiff.value
+  if(distance.value == 0){
+    roundScore.value = 5000
+  }
+  else{
+    roundScore.value = 1/distance.value * 10000
+  }
+
+  console.log("round score: ", roundScore.value)
+
+  totalScore.value += roundScore.value
+
+  if(floorDiff.value == 0){
+    correctFloor.value = true
+  } else correctFloor.value = false
+
+  if(roundScore.value > score_boundary.value && correctFloor.value){
+    result.value = true
+  } else result.value = false
+
+  if(guessCount.value == 10){
+    totalScore.value *= totalScore.value
+  }
+}
+
+function getDistance() {
+    const R = 6371000; // Radius of the Earth in meters
+    const toRadians = (degrees: number) => degrees * (Math.PI / 180);
+
+    const dLat = toRadians(marker_position.lat - (actual_position.lat));
+    const dLon = toRadians(marker_position.lng - (actual_position.lng));
+
+    const lat1 = toRadians(actual_position.lat);
+    const lat2 = toRadians(marker_position.lat);
+
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    const distance = Math.floor(R * c); // Distance in meters
+    return distance;
+}
 
 function updateMarkerPosition(event: google.maps.MapMouseEvent) {
   marker_position = {
@@ -54,11 +137,12 @@ function updateMarkerPosition(event: google.maps.MapMouseEvent) {
 
 const guess = computed<Guess | undefined>(() => {
   return {
-    correct: true,
-    distance: 10,
+    correct: result.value,
+    distance: distance.value,
     time: timerText.value,
     stage: stageText.value,
     guess: marker_position,
+    floorDiff: floorDiff.value
   }
 })
 
@@ -73,11 +157,11 @@ const mapConfig = computed<MapConfig | undefined>(() => {
     maptypecontrol: maptypecontrol,
     streetviewcontrol: streetviewcontrol,
     map_styles: map_styles,
-    zoom: zoom,
+    zoom: currentZoom.value,
+    mapTypeId: 'satellite',
+    tilt: 0,
   }
 })
-
-const mapExpanded = ref(false)
 
 const { open, close } = useModal({
   component: GuessResultsModal,
@@ -89,14 +173,20 @@ const { open, close } = useModal({
       close()
     },
     onClosed() {
+      mapExpanded.value = false
       getRandomImage()
     },
   },
 })
 
 async function doGuess() {
+  if(marker_position.lat === 0 && marker_position.lng === 0){
+    return
+  } // disable guess when marker not moved
+  evaluate()
   open()
 }
+
 
 async function getRandomImage() {
   // a temp return for now because we don't have enough images, after getting 10+ images we can remove this if statement
@@ -115,6 +205,7 @@ async function getRandomImage() {
 
 onMounted(async () => {
   await getRandomImage()
+  start_timer()
 })
 </script>
 
@@ -124,7 +215,7 @@ onMounted(async () => {
     <div class="timer game-control" v-text="timerText"></div>
     <div class="stage game-control" v-text="stageText"></div>
     <button class="guess game-control" @click="doGuess">Guess</button>
-    <select class="floor game-control">
+    <select class="floor game-control" v-model="selectedFloor">
       <option>1F</option>
       <option>2F</option>
       <option>3F</option>
@@ -142,7 +233,9 @@ onMounted(async () => {
           :zoom-control="zoomcontrol"
           :map-type-control="maptypecontrol"
           :street-view-control="streetviewcontrol"
-          :zoom="zoom"
+          :zoom="currentZoom"
+          :mapTypeId="mapTypeId"
+          :tilt="0"
           @click="updateMarkerPosition"
         >
           <Marker id="marker" :options="marker_option" />
@@ -151,7 +244,7 @@ onMounted(async () => {
       <label class="map-expanded">
         <v-icon v-if="mapExpanded" name="fa-compress-arrows-alt" scale="2" />
         <v-icon v-if="!mapExpanded" name="fa-expand-arrows-alt" scale="2" />
-        <input type="checkbox" v-model="mapExpanded" />
+        <input type="checkbox" v-model="mapExpanded" @change="toggleMapExpansionZoom" />
       </label>
     </div>
   </div>
