@@ -184,4 +184,45 @@ const emit = defineEmits<{
 .guess-results-modal__confetti {
   position: absolute;
 }
+
+@media screen and (max-width: 1024px) {
+  .guess-results-modal__content {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 4.5rem 1fr 4.5rem;
+  }
+
+  .guess-results-modal__timer {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .guess-results-modal__stage {
+    grid-row: 1;
+    grid-column: 2;
+  }
+
+  .guess-results-modal__content--main {
+    grid-row: 2;
+    grid-column: 1/-1;
+    
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+  }
+
+  .guess-results-modal__next {
+    background-color: rgba(255, 255, 255, 0.95);
+    font-size: 1rem;
+    font-weight: bold;
+    clip-path: polygon(0 0, 95% 0, 100% 50%, 95% 100%, 0 100%);
+    padding-right: 15%;
+    margin: 10px;
+    grid-row: 3;
+    grid-column: 1/-1;
+  }
+}
 </style>
