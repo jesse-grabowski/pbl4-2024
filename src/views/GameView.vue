@@ -363,4 +363,89 @@ onMounted(async () => {
     opacity: 0;
   }
 }
+
+@media screen and (max-width: 1024px) {
+  .game {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 4.5rem 1fr 0fr;
+  }
+
+  .game:has(.map-expanded input:checked) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 4.5rem 50px 1fr;
+  }
+
+  .timer {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .stage {
+    grid-row: 1;
+    grid-column: 2;
+  }
+
+  .guess {
+    grid-row: 1;
+    grid-column: 4;
+  }
+
+  .floor {
+    grid-row: 1;
+    grid-column: 3;
+  }
+
+  .map-holder {
+    display: none;
+  }
+
+  .map-container {
+    grid-column: 1/-1;
+    grid-row: 3/-1;
+  }
+
+  .map-expanded {
+    top: 0;
+    left: 0;
+    margin-top: -55px;
+    margin-left: 5px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .game {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 4.5rem 4.5rem 1fr 0fr;
+  }
+
+  .game:has(.map-expanded input:checked) {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 4.5rem 4.5rem 50px 1fr;
+  }
+
+  .timer {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .stage {
+    grid-row: 1;
+    grid-column: 2;
+  }
+
+  .guess {
+    grid-row: 2;
+    grid-column: 1;
+  }
+
+  .floor {
+    grid-row: 2;
+    grid-column: 2;
+  }
+
+  .map-container {
+    grid-column: 1/-1;
+    grid-row: 4/-1;
+  }
+}
 </style>
