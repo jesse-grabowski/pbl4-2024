@@ -20,6 +20,8 @@ const guessCount = ref(0)
 const stageText = computed(() => `${guessCount.value} / 10`)
 const roundScore = ref(0)
 const totalScore = ref(0)
+const maxScore = 5000;
+const distanceForZero = 60;
 
 const distance = ref(0)
 const selectedFloor = ref('1F')
@@ -82,10 +84,11 @@ function evaluate(){
   floorDiff.value = (Math.abs(Number(selectedFloor.value[0]) - Number(image.value?.floor)))
   distance.value = getDistance() + 10 * floorDiff.value
   if(distance.value == 0){
-    roundScore.value = 5000
+    roundScore.value = maxScore;
   }
   else{
-    roundScore.value = 1/distance.value * 10000
+    // roundScore.value = 1/distance.value * 10000
+    roundScore.value = Math.max((maxScore - (distance.value + 10 * floorDiff.value) * maxScore / distanceForZero), 0);
   }
 
   console.log("round score: ", roundScore.value)
