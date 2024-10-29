@@ -21,14 +21,14 @@ const stageText = computed(() => `${guessCount.value} / 10`)
 const roundScore = ref(0)
 const totalScore = ref(0)
 const maxScore = 5000;
-const distanceForZero = 60;
+const distanceForZero = 40;
 
 const distance = ref(0)
 const selectedFloor = ref('1F')
 const floorDiff = ref(0)
 const result = ref(false)
 const correctFloor = ref(false)
-const score_boundary = ref(400) // temporary
+const score_boundary = 1800; // temporary
 
 const apikey = 'AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI'
 const OIC_COORD = { lat: 34.81027686919236, lng: 135.56099624838777 }
@@ -82,7 +82,7 @@ function start_timer() {
 
 function evaluate(){
   floorDiff.value = (Math.abs(Number(selectedFloor.value[0]) - Number(image.value?.floor)))
-  distance.value = getDistance() + 10 * floorDiff.value
+  distance.value = getDistance()
   if(distance.value == 0){
     roundScore.value = maxScore;
   }
@@ -99,7 +99,7 @@ function evaluate(){
     correctFloor.value = true
   } else correctFloor.value = false
 
-  if(roundScore.value > score_boundary.value && correctFloor.value){
+  if(roundScore.value > score_boundary && correctFloor.value){
     result.value = true
   } else result.value = false
 
@@ -177,6 +177,12 @@ const { open, close } = useModal({
     },
     onClosed() {
       mapExpanded.value = false
+      marker_position = {lat: 0, lng: 0}
+      marker_option.value = {
+        ...marker_option.value,
+        position: marker_position,
+      }
+      selectedFloor.value = '1F'
       getRandomImage()
     },
   },

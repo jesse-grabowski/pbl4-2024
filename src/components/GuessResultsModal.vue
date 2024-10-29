@@ -6,6 +6,7 @@ import CorrectGuessSound from '@/assets/sounds/correct-guess.mp3'
 import WrongGuessSound from '@/assets/sounds/wrong-guess.mp3'
 import type { Ref } from 'vue'
 import type { Guess } from '@/models/guess'
+import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
 
 // const mapTypeId = 'satellite'
