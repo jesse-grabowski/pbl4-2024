@@ -1,5 +1,4 @@
-import type { Coordinates } from '@/models/guess'
-
+import type { Coordinates } from './coordinates'
 export interface Image {
   title: string
   description: string

@@ -1,4 +1,4 @@
-import type { Coordinates } from '@/models/guess'
+import type { Coordinates } from './coordinates'
 
 export interface MapConfig {
   apikey: string

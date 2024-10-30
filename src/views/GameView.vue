@@ -5,7 +5,8 @@ import ImageData from '@/data/image-data'
 import DynamicImage from '@/components/DynamicImage.vue'
 import { useModal } from 'vue-final-modal'
 import GuessResultsModal from '@/components/GuessResultsModal.vue'
-import type { Guess, Coordinates } from '@/models/guess'
+import type { Guess } from '@/models/guess'
+import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
 
 const images: Image[] = ImageData
@@ -20,15 +21,15 @@ const guessCount = ref(0)
 const stageText = computed(() => `${guessCount.value} / 10`)
 const roundScore = ref(0)
 const totalScore = ref(0)
-const maxScore = 5000;
-const distanceForZero = 40;
+const maxScore = 5000
+const distanceForZero = 40
 
 const distance = ref(0)
 const selectedFloor = ref('1F')
 const floorDiff = ref(0)
 const result = ref(false)
 const correctFloor = ref(false)
-const score_boundary = 1800; // temporary
+const score_boundary = 1800 // temporary
 
 const apikey = 'AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI'
 const OIC_COORD = { lat: 34.81027686919236, lng: 135.56099624838777 }
@@ -67,64 +68,63 @@ function toggleMapExpansionZoom() {
 }
 
 function start_timer() {
-  timer.value = 600;
+  timer.value = 600
   const interval = setInterval(() => {
     if (timer.value > 0) {
-      timer.value--;
-      const minutes = Math.floor(timer.value / 60);
-      const seconds = timer.value % 60;
-      timerText.value = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      timer.value--
+      const minutes = Math.floor(timer.value / 60)
+      const seconds = timer.value % 60
+      timerText.value = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
     } else {
-      clearInterval(interval);
+      clearInterval(interval)
     }
-  }, 1000);
+  }, 1000)
 }
 
-function evaluate(){
-  floorDiff.value = (Math.abs(Number(selectedFloor.value[0]) - Number(image.value?.floor)))
+function evaluate() {
+  floorDiff.value = Math.abs(Number(selectedFloor.value[0]) - Number(image.value?.floor))
   distance.value = getDistance()
-  if(distance.value == 0){
-    roundScore.value = maxScore;
-  }
-  else{
+  if (distance.value == 0) {
+    roundScore.value = maxScore
+  } else {
     // roundScore.value = 1/distance.value * 10000
-    roundScore.value = Math.max((maxScore - (distance.value + 10 * floorDiff.value) * maxScore / distanceForZero), 0);
+    roundScore.value = Math.max(maxScore - ((distance.value + 10 * floorDiff.value) * maxScore) / distanceForZero, 0)
   }
 
-  console.log("round score: ", roundScore.value)
+  console.log('round score: ', roundScore.value)
 
   totalScore.value += roundScore.value
 
-  if(floorDiff.value == 0){
+  if (floorDiff.value == 0) {
     correctFloor.value = true
   } else correctFloor.value = false
 
-  if(roundScore.value > score_boundary && correctFloor.value){
+  if (roundScore.value > score_boundary && correctFloor.value) {
     result.value = true
   } else result.value = false
 
-  if(guessCount.value == 10){
+  if (guessCount.value == 10) {
     totalScore.value *= totalScore.value
   }
 }
 
 function getDistance() {
-    const R = 6371000; // Radius of the Earth in meters
-    const toRadians = (degrees: number) => degrees * (Math.PI / 180);
+  const R = 6371000 // Radius of the Earth in meters
+  const toRadians = (degrees: number) => degrees * (Math.PI / 180)
 
-    const dLat = toRadians(marker_position.lat - (actual_position.lat));
-    const dLon = toRadians(marker_position.lng - (actual_position.lng));
+  const dLat = toRadians(marker_position.lat - actual_position.lat)
+  const dLon = toRadians(marker_position.lng - actual_position.lng)
 
-    const lat1 = toRadians(actual_position.lat);
-    const lat2 = toRadians(marker_position.lat);
+  const lat1 = toRadians(actual_position.lat)
+  const lat2 = toRadians(marker_position.lat)
 
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2)
 
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
-    const distance = Math.floor(R * c); // Distance in meters
-    return distance;
+  const distance = Math.floor(R * c) // Distance in meters
+  return distance
 }
 
 function updateMarkerPosition(event: google.maps.MapMouseEvent) {
@@ -145,7 +145,7 @@ const guess = computed<Guess | undefined>(() => {
     time: timerText.value,
     stage: stageText.value,
     guess: marker_position,
-    floorDiff: floorDiff.value
+    floorDiff: floorDiff.value,
   }
 })
 
@@ -177,7 +177,7 @@ const { open, close } = useModal({
     },
     onClosed() {
       mapExpanded.value = false
-      marker_position = {lat: 0, lng: 0}
+      marker_position = { lat: 0, lng: 0 }
       marker_option.value = {
         ...marker_option.value,
         position: marker_position,
@@ -189,13 +189,12 @@ const { open, close } = useModal({
 })
 
 async function doGuess() {
-  if(marker_position.lat === 0 && marker_position.lng === 0){
+  if (marker_position.lat === 0 && marker_position.lng === 0) {
     return
   } // disable guess when marker not moved
   evaluate()
   open()
 }
-
 
 async function getRandomImage() {
   // a temp return for now because we don't have enough images, after getting 10+ images we can remove this if statement

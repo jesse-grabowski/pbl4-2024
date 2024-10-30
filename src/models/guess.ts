@@ -1,3 +1,5 @@
+import type { Coordinates } from './coordinates'
+
 export interface Guess {
   correct: boolean
   distance: number
@@ -5,9 +7,4 @@ export interface Guess {
   guess: Coordinates
   time: string
   stage: string
-}
-
-export interface Coordinates {
-  lat: number
-  lng: number
 }
