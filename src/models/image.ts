@@ -1,10 +1,9 @@
-import type { Coordinates } from './coordinates'
 export interface Image {
   title: string
   description: string
   url: string
   isPanorama: boolean
-  coordinate: Coordinates
+  coordinate: google.maps.LatLngLiteral
   floor: number
   haov: number
   vaov: number

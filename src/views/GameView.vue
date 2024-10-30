@@ -8,8 +8,7 @@ import GuessResultsModal from '@/components/GuessResultsModal.vue'
 import type { Guess } from '@/models/guess'
 import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
-
-import markerImage from '@/assets/images/marker.png';
+import markerImage from '@/assets/images/marker.png'
 
 const images: Image[] = ImageData
 const guessedImageSet = new Set<number>()
@@ -155,7 +154,7 @@ const guess = computed<Guess | undefined>(() => {
     distance: distance.value,
     time: timerText.value,
     stage: stageText.value,
-    guess: marker_position,
+    guessedCoordinate: marker_position,
     floorDiff: floorDiff.value,
   }
 })
