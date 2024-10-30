@@ -37,6 +37,7 @@ import { ModalsContainer } from 'vue-final-modal'
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .mobile-header {
@@ -58,6 +59,7 @@ header {
 
 main {
   max-height: calc(100vh - 4rem);
+  max-height: calc(100dvh - 4rem);
   flex-grow: 1;
   display: flex;
   align-items: stretch;

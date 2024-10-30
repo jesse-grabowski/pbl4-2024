@@ -110,6 +110,8 @@ const emit = defineEmits<{
   display: grid;
   grid-template-columns: 12rem 1fr 12rem;
   grid-template-rows: 4.5rem 1fr 4.5rem 1fr;
+  
+  overflow-y: scroll;
 }
 
 .guess-results-modal__content--main {
