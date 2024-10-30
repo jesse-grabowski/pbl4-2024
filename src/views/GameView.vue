@@ -9,6 +9,8 @@ import type { Guess } from '@/models/guess'
 import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
 
+import markerImage from '@/assets/images/marker.png';
+
 const images: Image[] = ImageData
 const guessedImageSet = new Set<number>()
 
@@ -56,7 +58,16 @@ const map_styles = [
 // let marker_position = OIC_COORD
 let marker_position = { lat: 0, lng: 0 }
 let actual_position = { lat: 0, lng: 0 }
-const marker_option = ref({ position: marker_position })
+const marker_option = ref({
+  position: marker_position,
+  icon: {
+    url: markerImage,
+    scaledSize: {
+      width: 40,
+      height: 40,
+    },
+  },
+})
 const mapExpanded = ref(false)
 
 function toggleMapExpansionZoom() {
