@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PanoramaImage from './PanoramaImage.vue'
+import type { Image } from '@/models/image'
 
 const props = defineProps<{
   image?: Image | undefined
