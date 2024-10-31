@@ -6,8 +6,13 @@ import { ModalsContainer } from 'vue-final-modal'
 <template>
   <div class="container">
     <header>
-      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
+      <div class="mobile-header">
+        <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+        <label for="toggleNavigation" class="mobile-only">
+          <v-icon name="fa-hamburger" scale="2" />
+        </label>
+      </div>
+      <input id="toggleNavigation" class="mobile-only" type="checkbox" value="false" />
       <nav>
         <ul>
           <li><RouterLink to="/">Home</RouterLink></li>
@@ -29,22 +34,33 @@ import { ModalsContainer } from 'vue-final-modal'
 
 <style scoped>
 .container {
-  display: grid;
-  grid-template-rows: 4rem calc(100vh - 4rem);
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  max-height: 100vh;
+  min-height: 100dvh;
+}
+
+.mobile-header {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0px 10px;
 }
 
 header {
-  height: 4rem;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  padding: 0.5rem;
 }
 
 main {
+  max-height: calc(100vh - 4rem);
+  max-height: calc(100dvh - 4rem);
+  flex-grow: 1;
   display: flex;
   align-items: stretch;
   justify-items: stretch;
@@ -60,10 +76,41 @@ nav {
   & ul {
     display: flex;
     flex-direction: row;
+    align-items: center;
+    justify-content: stretch;
 
     & li {
       margin: 0px 10px;
     }
+  }
+}
+
+.mobile-only {
+  display: none;
+}
+
+#toggleNavigation {
+  position: absolute;
+  opacity: 0;
+}
+
+@media screen and (max-width: 1024px) {
+  header {
+    min-height: 4rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .mobile-only {
+    display: inline-block;
+  }
+
+  #toggleNavigation:not(:checked) ~ nav {
+    display: none;
+  }
+
+  #toggleNavigation:checked ~ nav ul {
+    flex-direction: column;
   }
 }
 </style>
