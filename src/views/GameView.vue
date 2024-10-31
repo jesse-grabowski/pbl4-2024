@@ -10,6 +10,7 @@ import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
 import guessMarkerImg from '@/assets/images/guessflag.png'
 import actualMarkerImg from '@/assets/images/targetflag.png'
+import { CONFIG } from '@/data/gameview_config'
 
 const images: Image[] = ImageData
 const guessedImageSet = new Set<number>()
@@ -17,8 +18,24 @@ const guessedImageSet = new Set<number>()
 // we need to include the width and height as hints for the browser to reserve enough space
 const image = ref<Image | undefined>(undefined)
 
+const timerText = CONFIG.timerText
+const selectedFloor = CONFIG.selectedFloor
+const score_boundary = CONFIG.score_boundary
+const apikey = CONFIG.apikey
+const OIC_COORD = CONFIG.OIC_COORD
+const zoomcontrol = CONFIG.zoomcontrol
+const maptypecontrol = CONFIG.maptypecontrol
+const streetviewcontrol = CONFIG.streetviewcontrol
+const initialZoom = CONFIG.initialZoom
+const mapTypeId = CONFIG.mapTypeId
+const map_styles = CONFIG.map_styles
+
+const marker_position = ref({ lat: 0, lng: 0 })
+const actual_position = ref({ lat: 0, lng: 0 })
+const center = ref({ lat: 0, lng: 0 })
+
+const mapExpanded = ref(false)
 const timer = ref(0)
-const timerText = ref('10:00')
 const guessCount = ref(0)
 const stageText = computed(() => `${guessCount.value} / 10`)
 const roundScore = ref(0)
@@ -27,48 +44,20 @@ const maxScore = 5000
 const distanceForZero = 40
 
 const distance = ref(0)
-const selectedFloor = ref('1F')
 const floorDiff = ref(0)
 const result = ref(false)
 const correctFloor = ref(false)
-const score_boundary = 1800 // temporary
-
-//#region Map Configs
-const apikey = 'AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI'
-const OIC_COORD = { lat: 34.81027686919236, lng: 135.56099624838777 }
-const zoomcontrol = false
-const maptypecontrol = false
-const streetviewcontrol = false
-const initialZoom = 16
-const currentZoom = ref(initialZoom)
-const mapTypeId = 'satellite'
-const map_styles = [
-  {
-    featureType: 'poi',
-    stylers: [{ visibility: 'off' }],
-  },
-  {
-    featureType: 'administrative',
-    stylers: [{ visibility: 'off' }],
-  },
-  {
-    featureType: 'transit',
-    stylers: [{ visibility: 'off' }],
-  },
-]
-// let marker_position = OIC_COORD
-let marker_position = { lat: 0, lng: 0 }
-let actual_position = { lat: 0, lng: 0 }
 const guess_marker_option = ref<google.maps.MarkerOptions>({
-  position: marker_position,
+  position: marker_position.value,
   visible: false,
 })
 const actual_marker_option = ref<google.maps.MarkerOptions>({
-  position: actual_position,
+  position: actual_position.value,
   visible: true,
 })
-const mapExpanded = ref(false)
 //#endregion Map Configs
+const currentZoom = ref(initialZoom)
+const resultZoom = ref(initialZoom)
 
 function toggleMapExpansionZoom() {
   if (mapExpanded.value) {
@@ -109,7 +98,7 @@ function evaluate() {
     correctFloor.value = true
   } else correctFloor.value = false
 
-  if (roundScore.value > score_boundary && correctFloor.value) {
+  if (roundScore.value > score_boundary.value && correctFloor.value) {
     result.value = true
   } else result.value = false
 
@@ -121,12 +110,11 @@ function evaluate() {
 function getDistance() {
   const R = 6371000 // Radius of the Earth in meters
   const toRadians = (degrees: number) => degrees * (Math.PI / 180)
+  const dLat = toRadians(marker_position.value.lat - actual_position.value.lat)
+  const dLon = toRadians(marker_position.value.lng - actual_position.value.lng)
 
-  const dLat = toRadians(marker_position.lat - actual_position.lat)
-  const dLon = toRadians(marker_position.lng - actual_position.lng)
-
-  const lat1 = toRadians(actual_position.lat)
-  const lat2 = toRadians(marker_position.lat)
+  const lat1 = toRadians(actual_position.value.lat)
+  const lat2 = toRadians(marker_position.value.lat)
 
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2)
@@ -138,15 +126,27 @@ function getDistance() {
 }
 
 function updateGuessMarkerPosition(event: google.maps.MapMouseEvent) {
-  marker_position = {
+  marker_position.value = {
     lat: event.latLng?.lat() || 0,
     lng: event.latLng?.lng() || 0,
   }
   guess_marker_option.value = {
     ...guess_marker_option.value,
-    position: marker_position,
+    position: marker_position.value,
     visible: true,
   }
+  center.value = {
+    lat: (marker_position.value.lat + actual_position.value.lat) / 2,
+    lng: (marker_position.value.lng + actual_position.value.lng) / 2,
+  }
+
+  // 16 = 500m
+  // 17 = 300m
+  // 18 = 100m
+  // 19 = 50m
+
+  resultZoom.value = 15.95 / (1 - 0.2103 * Math.exp(-0.005292 * getDistance()))
+  console.log(resultZoom.value, getDistance())
 }
 
 const guess = computed<Guess | undefined>(() => {
@@ -155,7 +155,7 @@ const guess = computed<Guess | undefined>(() => {
     distance: distance.value,
     time: timerText.value,
     stage: stageText.value,
-    guessedCoordinate: marker_position,
+    guessedCoordinate: marker_position.value,
     floorDiff: floorDiff.value,
   }
 })
@@ -163,15 +163,12 @@ const guess = computed<Guess | undefined>(() => {
 const mapConfig = computed<MapConfig | undefined>(() => {
   return {
     apikey: apikey,
-    center: {
-      lat: (marker_position.lat + actual_position.lat) / 2,
-      lng: (marker_position.lng + actual_position.lng) / 2,
-    },
+    center: center.value,
     zoomcontrol: zoomcontrol,
     maptypecontrol: maptypecontrol,
     streetviewcontrol: streetviewcontrol,
     map_styles: map_styles,
-    zoom: currentZoom.value,
+    zoom: resultZoom.value,
     mapTypeId: 'satellite',
     tilt: 0,
   }
@@ -190,7 +187,7 @@ const { open, close } = useModal({
     },
     onClosed() {
       mapExpanded.value = false
-      marker_position = { lat: 0, lng: 0 }
+      marker_position.value = { lat: 0, lng: 0 }
       guess_marker_option.value = {
         ...guess_marker_option.value,
         visible: false,
@@ -202,7 +199,7 @@ const { open, close } = useModal({
 })
 
 async function doGuess() {
-  if (marker_position.lat === 0 && marker_position.lng === 0) {
+  if (marker_position.value.lat === 0 && marker_position.value.lng === 0) {
     return
   } // disable guess when marker not moved
   evaluate()
@@ -219,10 +216,10 @@ async function getRandomImage() {
     randomInt = Chance().integer({ min: 0, max: images.length - 1 })
   } while (guessedImageSet.has(randomInt))
   image.value = images[randomInt]
-  actual_position = image.value.coordinate
+  actual_position.value = image.value.coordinate
   actual_marker_option.value = {
     ...actual_marker_option.value,
-    position: actual_position,
+    position: actual_position.value,
   }
   guessCount.value++
   guessedImageSet.add(randomInt)
@@ -444,14 +441,6 @@ onMounted(async () => {
   .map-container {
     grid-column: 1/-1;
     grid-row: 3/-1;
-
-    &:has(.map-expanded input:checked) .map-border {
-      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-    }
-
-    &:has(.map-expanded input:checked) .map {
-      clip-path: polygon(5px 5px, calc(100% - 5px) 5px, calc(100% - 5px) calc(100% - 5px), 5px calc(100% - 5px));
-    }
   }
 
   .map-expanded {
@@ -459,14 +448,6 @@ onMounted(async () => {
     left: 0;
     margin-top: -55px;
     margin-left: 5px;
-  }
-
-  .map {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  }
-
-  .map-border {
-    clip-path: polygon(5px 5px, calc(100% - 5px) 5px, calc(100% - 5px) calc(100% - 5px), 5px calc(100% - 5px));
   }
 }
 
