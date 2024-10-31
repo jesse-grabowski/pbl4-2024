@@ -58,15 +58,8 @@ const map_styles = [
 // let marker_position = OIC_COORD
 let marker_position = { lat: 0, lng: 0 }
 let actual_position = { lat: 0, lng: 0 }
-const marker_option = ref({
+const marker_option = ref<google.maps.MarkerOptions>({
   position: marker_position,
-  icon: {
-    url: markerImage,
-    scaledSize: {
-      width: 40,
-      height: 40,
-    },
-  },
   visible: false,
 })
 const mapExpanded = ref(false)
@@ -226,7 +219,11 @@ async function getRandomImage() {
 }
 
 onMounted(async () => {
-  await google.maps.importLibrary('core')
+  const { Size } = (await google.maps.importLibrary('core')) as google.maps.CoreLibrary
+  marker_option.value.icon = {
+    url: markerImage,
+    scaledSize: new Size(40, 40),
+  }
   await getRandomImage()
   start_timer()
 })
