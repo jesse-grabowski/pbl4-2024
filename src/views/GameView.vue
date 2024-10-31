@@ -1,92 +1,192 @@
 <script setup lang="ts">
-import { GoogleMap , Marker} from "vue3-google-map";
+import { GoogleMap, Marker } from 'vue3-google-map'
 import { Chance } from 'chance'
-import { type Image } from '@/models/image'
-import { type Guess } from '@/models/guess'
 import ImageData from '@/data/image-data'
 import DynamicImage from '@/components/DynamicImage.vue'
 import { useModal } from 'vue-final-modal'
 import GuessResultsModal from '@/components/GuessResultsModal.vue'
+import type { Guess, Coordinates } from '@/models/guess'
+import type { MapConfig } from '@/models/mapConfig'
 
 const images: Image[] = ImageData
 const guessedImageSet = new Set<number>()
 
 // we need to include the width and height as hints for the browser to reserve enough space
-const image = ref<Image | undefined>(undefined);
+const image = ref<Image | undefined>(undefined)
 
+const timer = ref(0)
 const timerText = ref('10:00')
 const guessCount = ref(0)
 const stageText = computed(() => `${guessCount.value} / 10`)
-const apikey = "AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI";
-const OIC_COORD = { lat: 34.81027686919236, lng: 135.56099624838777 }
-const zoomcontrol = false;
-const maptypecontrol = false;
-const streetviewcontrol = false;
-const map_styles = [
-        {
-          featureType: "poi",
-          stylers: [{ visibility: "off" }],
-        },
-        {
-          featureType: "administrative",
-          stylers: [{ visibility: "off" }],
-        },
-        {
-          featureType: "transit",
-          stylers: [{ visibility: "off" }],
-        },
-    ];
-let marker_position = OIC_COORD;
-const marker_option = ref({ position: marker_position });
+const roundScore = ref(0)
+const totalScore = ref(0)
 
-function updateMarkerPosition(event: any) {
-      marker_position = {
-        lat: event.latLng?.lat() || 0,
-        lng: event.latLng?.lng() || 0,
-      };
-      marker_option.value = {
-        ... marker_option.value,
-        position: marker_position
-      }
-      console.log(marker_option);
+const distance = ref(0)
+const selectedFloor = ref('1F')
+const floorDiff = ref(0)
+const result = ref(false)
+const correctFloor = ref(false)
+const score_boundary = ref(400) // temporary
+
+const apikey = 'AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI'
+const OIC_COORD = { lat: 34.81027686919236, lng: 135.56099624838777 }
+const zoomcontrol = false
+const maptypecontrol = false
+const streetviewcontrol = false
+const initialZoom = 16
+const currentZoom = ref(initialZoom)
+const mapTypeId = 'satellite'
+const map_styles = [
+  {
+    featureType: 'poi',
+    stylers: [{ visibility: 'off' }],
+  },
+  {
+    featureType: 'administrative',
+    stylers: [{ visibility: 'off' }],
+  },
+  {
+    featureType: 'transit',
+    stylers: [{ visibility: 'off' }],
+  },
+]
+// let marker_position = OIC_COORD
+let marker_position = { lat: 0, lng: 0 }
+let actual_position = { lat: 0, lng: 0 }
+const marker_option = ref({ position: marker_position })
+const mapExpanded = ref(false)
+
+function toggleMapExpansionZoom() {
+  if (mapExpanded.value) {
+    currentZoom.value += 1.4
+  } else {
+    currentZoom.value -= 1.4
+  }
+}
+
+function start_timer() {
+  timer.value = 600;
+  const interval = setInterval(() => {
+    if (timer.value > 0) {
+      timer.value--;
+      const minutes = Math.floor(timer.value / 60);
+      const seconds = timer.value % 60;
+      timerText.value = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    } else {
+      clearInterval(interval);
+    }
+  }, 1000);
+}
+
+function evaluate(){
+  floorDiff.value = (Math.abs(Number(selectedFloor.value[0]) - Number(image.value?.floor)))
+  distance.value = getDistance() + 10 * floorDiff.value
+  if(distance.value == 0){
+    roundScore.value = 5000
+  }
+  else{
+    roundScore.value = 1/distance.value * 10000
+  }
+
+  console.log("round score: ", roundScore.value)
+
+  totalScore.value += roundScore.value
+
+  if(floorDiff.value == 0){
+    correctFloor.value = true
+  } else correctFloor.value = false
+
+  if(roundScore.value > score_boundary.value && correctFloor.value){
+    result.value = true
+  } else result.value = false
+
+  if(guessCount.value == 10){
+    totalScore.value *= totalScore.value
+  }
+}
+
+function getDistance() {
+    const R = 6371000; // Radius of the Earth in meters
+    const toRadians = (degrees: number) => degrees * (Math.PI / 180);
+
+    const dLat = toRadians(marker_position.lat - (actual_position.lat));
+    const dLon = toRadians(marker_position.lng - (actual_position.lng));
+
+    const lat1 = toRadians(actual_position.lat);
+    const lat2 = toRadians(marker_position.lat);
+
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    const distance = Math.floor(R * c); // Distance in meters
+    return distance;
+}
+
+function updateMarkerPosition(event: google.maps.MapMouseEvent) {
+  marker_position = {
+    lat: event.latLng?.lat() || 0,
+    lng: event.latLng?.lng() || 0,
+  }
+  marker_option.value = {
+    ...marker_option.value,
+    position: marker_position,
+  }
 }
 
 const guess = computed<Guess | undefined>(() => {
   return {
-    correct: true,
-    distance: 10,
+    correct: result.value,
+    distance: distance.value,
     time: timerText.value,
     stage: stageText.value,
-    guess: {
-      latitude: 0,
-      longitude: 0,
-    },
-    actual: {
-      latitude: 0,
-      longitude: 0
-    }
-  };
-});
+    guess: marker_position,
+    floorDiff: floorDiff.value
+  }
+})
 
-const mapExpanded = ref(false)
+const mapConfig = computed<MapConfig | undefined>(() => {
+  return {
+    apikey: apikey,
+    center: {
+      lat: (marker_position.lat + actual_position.lat) / 2,
+      lng: (marker_position.lng + actual_position.lng) / 2,
+    },
+    zoomcontrol: zoomcontrol,
+    maptypecontrol: maptypecontrol,
+    streetviewcontrol: streetviewcontrol,
+    map_styles: map_styles,
+    zoom: currentZoom.value,
+    mapTypeId: 'satellite',
+    tilt: 0,
+  }
+})
 
 const { open, close } = useModal({
   component: GuessResultsModal,
   attrs: {
     image: image,
     guess: guess,
+    mapConfig: mapConfig,
     onConfirm() {
-      close();
+      close()
     },
     onClosed() {
-      getRandomImage();
-    }
+      mapExpanded.value = false
+      getRandomImage()
+    },
   },
 })
 
 async function doGuess() {
-  open();
+  if(marker_position.lat === 0 && marker_position.lng === 0){
+    return
+  } // disable guess when marker not moved
+  evaluate()
+  open()
 }
+
 
 async function getRandomImage() {
   // a temp return for now because we don't have enough images, after getting 10+ images we can remove this if statement
@@ -98,22 +198,24 @@ async function getRandomImage() {
     randomInt = Chance().integer({ min: 0, max: images.length - 1 })
   } while (guessedImageSet.has(randomInt))
   image.value = images[randomInt]
+  actual_position = image.value.coordinate
   guessCount.value++
   guessedImageSet.add(randomInt)
 }
 
 onMounted(async () => {
   await getRandomImage()
+  start_timer()
 })
 </script>
 
 <template>
   <div class="game">
-    <DynamicImage class="image-container" :image="image"/>
+    <DynamicImage class="image-container" :image="image" />
     <div class="timer game-control" v-text="timerText"></div>
     <div class="stage game-control" v-text="stageText"></div>
     <button class="guess game-control" @click="doGuess">Guess</button>
-    <select class="floor game-control">
+    <select class="floor game-control" v-model="selectedFloor">
       <option>1F</option>
       <option>2F</option>
       <option>3F</option>
@@ -131,15 +233,18 @@ onMounted(async () => {
           :zoom-control="zoomcontrol"
           :map-type-control="maptypecontrol"
           :street-view-control="streetviewcontrol"
-          :zoom="16"
-          @click="updateMarkerPosition">
+          :zoom="currentZoom"
+          :mapTypeId="mapTypeId"
+          :tilt="0"
+          @click="updateMarkerPosition"
+        >
           <Marker id="marker" :options="marker_option" />
         </GoogleMap>
       </div>
       <label class="map-expanded">
         <v-icon v-if="mapExpanded" name="fa-compress-arrows-alt" scale="2" />
         <v-icon v-if="!mapExpanded" name="fa-expand-arrows-alt" scale="2" />
-        <input type="checkbox" v-model="mapExpanded" />
+        <input type="checkbox" v-model="mapExpanded" @change="toggleMapExpansionZoom" />
       </label>
     </div>
   </div>
@@ -256,6 +361,91 @@ onMounted(async () => {
   & input {
     position: absolute;
     opacity: 0;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .game {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 4.5rem 1fr 0fr;
+  }
+
+  .game:has(.map-expanded input:checked) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 4.5rem 50px 1fr;
+  }
+
+  .timer {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .stage {
+    grid-row: 1;
+    grid-column: 2;
+  }
+
+  .guess {
+    grid-row: 1;
+    grid-column: 4;
+  }
+
+  .floor {
+    grid-row: 1;
+    grid-column: 3;
+  }
+
+  .map-holder {
+    display: none;
+  }
+
+  .map-container {
+    grid-column: 1/-1;
+    grid-row: 3/-1;
+  }
+
+  .map-expanded {
+    top: 0;
+    left: 0;
+    margin-top: -55px;
+    margin-left: 5px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .game {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 4.5rem 4.5rem 1fr 0fr;
+  }
+
+  .game:has(.map-expanded input:checked) {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 4.5rem 4.5rem 50px 1fr;
+  }
+
+  .timer {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .stage {
+    grid-row: 1;
+    grid-column: 2;
+  }
+
+  .guess {
+    grid-row: 2;
+    grid-column: 1;
+  }
+
+  .floor {
+    grid-row: 2;
+    grid-column: 2;
+  }
+
+  .map-container {
+    grid-column: 1/-1;
+    grid-row: 4/-1;
   }
 }
 </style>

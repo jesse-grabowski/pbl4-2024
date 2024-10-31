@@ -46,6 +46,11 @@ export default defineConfig({
         {
           vue: ['ref', 'onMounted', 'computed'],
         },
+        {
+          from: '@/models/image',
+          imports: ['Image'],
+          type: true,
+        },
         VueRouterAutoImports,
       ],
       dts: 'src/auto-imports.d.ts',
