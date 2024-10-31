@@ -30,8 +30,8 @@ const initialZoom = CONFIG.initialZoom
 const mapTypeId = CONFIG.mapTypeId
 const map_styles = CONFIG.map_styles
 
-const marker_position = ref({ lat: 0, lng: 0 })
-const actual_position = ref({ lat: 0, lng: 0 })
+const markerPosition = ref({ lat: 0, lng: 0 })
+const actualPosition = ref({ lat: 0, lng: 0 })
 const center = ref({ lat: 0, lng: 0 })
 
 const mapExpanded = ref(false)
@@ -47,15 +47,14 @@ const distance = ref(0)
 const floorDiff = ref(0)
 const result = ref(false)
 const correctFloor = ref(false)
-const guess_marker_option = ref<google.maps.MarkerOptions>({
-  position: marker_position.value,
+const guessMarkerOption = ref<google.maps.MarkerOptions>({
+  position: markerPosition.value,
   visible: false,
 })
-const actual_marker_option = ref<google.maps.MarkerOptions>({
-  position: actual_position.value,
+const actualMarkerOption = ref<google.maps.MarkerOptions>({
+  position: actualPosition.value,
   visible: true,
 })
-//#endregion Map Configs
 const currentZoom = ref(initialZoom)
 const resultZoom = ref(initialZoom)
 
@@ -67,15 +66,21 @@ function toggleMapExpansionZoom() {
   }
 }
 
-function start_timer() {
+const timerInterval = ref<number | undefined>(undefined)
+
+function startTimer() {
+  timerText.value = '30'
+  if (timerInterval.value !== undefined) {
+    clearInterval(timerInterval.value)
+  }
   timer.value = 30
-  const interval = setInterval(() => {
+  timerInterval.value = setInterval(() => {
     if (timer.value > 0) {
       timer.value--
       const seconds = timer.value
       timerText.value = `${seconds < 10 ? '0' : ''}${seconds}`
     } else {
-      clearInterval(interval)
+      clearInterval(timerInterval.value)
     }
   }, 1000)
 }
@@ -110,11 +115,11 @@ function evaluate() {
 function getDistance() {
   const R = 6371000 // Radius of the Earth in meters
   const toRadians = (degrees: number) => degrees * (Math.PI / 180)
-  const dLat = toRadians(marker_position.value.lat - actual_position.value.lat)
-  const dLon = toRadians(marker_position.value.lng - actual_position.value.lng)
+  const dLat = toRadians(markerPosition.value.lat - actualPosition.value.lat)
+  const dLon = toRadians(markerPosition.value.lng - actualPosition.value.lng)
 
-  const lat1 = toRadians(actual_position.value.lat)
-  const lat2 = toRadians(marker_position.value.lat)
+  const lat1 = toRadians(actualPosition.value.lat)
+  const lat2 = toRadians(markerPosition.value.lat)
 
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2)
@@ -126,18 +131,18 @@ function getDistance() {
 }
 
 function updateGuessMarkerPosition(event: google.maps.MapMouseEvent) {
-  marker_position.value = {
+  markerPosition.value = {
     lat: event.latLng?.lat() || 0,
     lng: event.latLng?.lng() || 0,
   }
-  guess_marker_option.value = {
-    ...guess_marker_option.value,
-    position: marker_position.value,
+  guessMarkerOption.value = {
+    ...guessMarkerOption.value,
+    position: markerPosition.value,
     visible: true,
   }
   center.value = {
-    lat: (marker_position.value.lat + actual_position.value.lat) / 2,
-    lng: (marker_position.value.lng + actual_position.value.lng) / 2,
+    lat: (markerPosition.value.lat + actualPosition.value.lat) / 2,
+    lng: (markerPosition.value.lng + actualPosition.value.lng) / 2,
   }
 
   // 16 = 500m
@@ -155,7 +160,7 @@ const guess = computed<Guess | undefined>(() => {
     distance: distance.value,
     time: timerText.value,
     stage: stageText.value,
-    guessedCoordinate: marker_position.value,
+    guessedCoordinate: markerPosition.value,
     floorDiff: floorDiff.value,
   }
 })
@@ -180,30 +185,35 @@ const { open, close } = useModal({
     image: image,
     guess: guess,
     mapConfig: mapConfig,
-    guess_marker_option: guess_marker_option,
-    actual_marker_option: actual_marker_option,
+    guessMarkerOption: guessMarkerOption,
+    actualMarkerOption: actualMarkerOption,
     onConfirm() {
       close()
     },
     onClosed() {
       mapExpanded.value = false
-      marker_position.value = { lat: 0, lng: 0 }
-      guess_marker_option.value = {
-        ...guess_marker_option.value,
+      markerPosition.value = { lat: 0, lng: 0 }
+      guessMarkerOption.value = {
+        ...guessMarkerOption.value,
         visible: false,
       }
       selectedFloor.value = '1F'
-      getRandomImage()
+      startNextRound()
     },
   },
 })
 
 async function doGuess() {
-  if (marker_position.value.lat === 0 && marker_position.value.lng === 0) {
+  if (markerPosition.value.lat === 0 && markerPosition.value.lng === 0) {
     return
   } // disable guess when marker not moved
   evaluate()
   open()
+}
+
+async function startNextRound() {
+  await getRandomImage()
+  startTimer()
 }
 
 async function getRandomImage() {
@@ -216,10 +226,10 @@ async function getRandomImage() {
     randomInt = Chance().integer({ min: 0, max: images.length - 1 })
   } while (guessedImageSet.has(randomInt))
   image.value = images[randomInt]
-  actual_position.value = image.value.coordinate
-  actual_marker_option.value = {
-    ...actual_marker_option.value,
-    position: actual_position.value,
+  actualPosition.value = image.value.coordinate
+  actualMarkerOption.value = {
+    ...actualMarkerOption.value,
+    position: actualPosition.value,
   }
   guessCount.value++
   guessedImageSet.add(randomInt)
@@ -227,16 +237,15 @@ async function getRandomImage() {
 
 onMounted(async () => {
   const { Size } = (await google.maps.importLibrary('core')) as google.maps.CoreLibrary
-  guess_marker_option.value.icon = {
+  guessMarkerOption.value.icon = {
     url: guessMarkerImg,
     scaledSize: new Size(40, 40),
   }
-  actual_marker_option.value.icon = {
+  actualMarkerOption.value.icon = {
     url: actualMarkerImg,
     scaledSize: new Size(40, 40),
   }
-  await getRandomImage()
-  start_timer()
+  await startNextRound()
 })
 </script>
 
@@ -275,7 +284,7 @@ onMounted(async () => {
           :tilt="0"
           @click="updateGuessMarkerPosition"
         >
-          <Marker id="marker" :options="guess_marker_option" />
+          <Marker id="marker" :options="guessMarkerOption" />
         </GoogleMap>
       </div>
       <label class="map-expanded" aria-label="Resize map">
