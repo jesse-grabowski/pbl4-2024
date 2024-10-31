@@ -4,26 +4,19 @@
 
 <template>
   <div class="leaderboard">
-    <div class="campuses">
-    <ul class="campus-links">
-      <li>Osaka Ibaraki</li>
-      <li>Biwako-Kusatsu</li>
-      <li>Kinugasa</li>
-    </ul>
+    <div class="title">
+      <h1>LeaderBoard</h1>
     </div>
-    
-    <div class='board'>
-      <Leaderboard></Leaderboard>
-    </div>
-
+      
+      <Leaderboard class="board"></Leaderboard>
+  </div>
+  <div class="box">
   </div>
 </template>
 
 <style scoped>
 .leaderboard {
-  flex-grow: 1;
   background-color: aliceblue;
-  background-color: rgba(100, 0, 0, .5);
   background-image: url('@/assets/images/background_oic.jpg');
   background-size: cover;
   background-position: center center;
@@ -36,33 +29,40 @@
   grid-column-gap: 0px;
   grid-row-gap: 0px;
 }
+.leaderboard::before {
+  grid-column: 1/-1;
+  grid-row: 1/-1;
+
+  background-color: rgba(100, 0, 0, .5);
+  content: '';
+}
 
 .campuses {
+color: aliceblue;
 
-  grid-row: 2;
-  grid-column:2;
-  font-weight: bold;
-  font-size: 1.5rem;
-  & ul {
-    display: flex;
-    flex-direction: row;
-
-    & li {
-      margin: 0px 10px;
-    }
-  }
 }
 
 .campus-links li:not(:first-of-type) {
-  border-left: 3px solid black;
+  border-left: 3px solid #404040;
   padding: 0% 20px;
 }
 
 .board {
+  color: aliceblue;
   grid-row: 3;
   grid-column:2;
-  border: 4px solid black;
-  background-color:rgba(169, 187, 212, 0.68);
+  margin: 0;
+  background-color: rgba(169, 187, 212,0.68);
+  
+}
+
+.title{
+  grid-row:1 ;
+  grid-column:2;
+  text-align:center;
+  padding-top: 5%;
+  color: aliceblue;
+  font-size: 300%;
 
 }
 </style>

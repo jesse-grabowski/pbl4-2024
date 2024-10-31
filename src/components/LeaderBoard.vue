@@ -52,11 +52,16 @@ onMounted(async() => {
 <style>
 
 #table {
+
     border: 4px solid black;
-    width: 700px;
-    height: 300px;
+    width:auto;
+    height: 600px;
     overflow-y: auto;
     display:block;
+}
+
+#table th{
+    background-color:rgba(0,0,0,0.7);
 }
 
 #table thead, tbody {
@@ -65,8 +70,9 @@ onMounted(async() => {
 }
 
 #table thead th, tbody td {
+    
     border: 1px solid black;
-    width: 10%;
+    width: 7%;
     text-align: left;
 }
 </style>
