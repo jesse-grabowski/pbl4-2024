@@ -32,6 +32,7 @@ const result = ref(false)
 const correctFloor = ref(false)
 const score_boundary = 1800 // temporary
 
+//#region Map Configs
 const apikey = 'AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI'
 const OIC_COORD = { lat: 34.81027686919236, lng: 135.56099624838777 }
 const zoomcontrol = false
@@ -66,8 +67,10 @@ const marker_option = ref({
       height: 40,
     },
   },
+  visible: false,
 })
 const mapExpanded = ref(false)
+//#endregion Map Configs
 
 function toggleMapExpansionZoom() {
   if (mapExpanded.value) {
@@ -145,6 +148,7 @@ function updateMarkerPosition(event: google.maps.MapMouseEvent) {
   marker_option.value = {
     ...marker_option.value,
     position: marker_position,
+    visible: true,
   }
 }
 
@@ -190,7 +194,7 @@ const { open, close } = useModal({
       marker_position = { lat: 0, lng: 0 }
       marker_option.value = {
         ...marker_option.value,
-        position: marker_position,
+        visible: false,
       }
       selectedFloor.value = '1F'
       getRandomImage()
@@ -222,6 +226,7 @@ async function getRandomImage() {
 }
 
 onMounted(async () => {
+  await google.maps.importLibrary('core')
   await getRandomImage()
   start_timer()
 })
