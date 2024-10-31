@@ -5,7 +5,7 @@ import ImageData from '@/data/image-data'
 import DynamicImage from '@/components/DynamicImage.vue'
 import { useModal } from 'vue-final-modal'
 import GuessResultsModal from '@/components/GuessResultsModal.vue'
-import type { Guess, Coordinates } from '@/models/guess'
+import type { Guess } from '@/models/guess'
 import type { MapConfig } from '@/models/mapConfig'
 
 const images: Image[] = ImageData

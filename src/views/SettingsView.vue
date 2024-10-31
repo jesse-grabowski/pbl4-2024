@@ -1,4 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+
+const masterVolume = ref(0)
+const musicVolume = ref(0)
+const gameplayVolume = ref(0)
+const effectsVolume = ref(0)
+const selectedLanguage = ref("")
+
+</script>
 <template>
   <div class="settings-page">
     <div class="sliders-container">
