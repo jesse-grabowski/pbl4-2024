@@ -17,7 +17,7 @@ const guessedImageSet = new Set<number>()
 const image = ref<Image | undefined>(undefined)
 
 const timer = ref(0)
-const timerText = ref('10:00')
+const timerText = ref('30:00')
 const guessCount = ref(0)
 const stageText = computed(() => `${guessCount.value} / 10`)
 const roundScore = ref(0)
@@ -74,13 +74,12 @@ function toggleMapExpansionZoom() {
 }
 
 function start_timer() {
-  timer.value = 600
+  timer.value = 30
   const interval = setInterval(() => {
     if (timer.value > 0) {
       timer.value--
-      const minutes = Math.floor(timer.value / 60)
-      const seconds = timer.value % 60
-      timerText.value = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+      const seconds = timer.value
+      timerText.value = `${seconds < 10 ? '0' : ''}${seconds}`
     } else {
       clearInterval(interval)
     }
@@ -179,6 +178,7 @@ const { open, close } = useModal({
     image: image,
     guess: guess,
     mapConfig: mapConfig,
+    marker_option: marker_option,
     onConfirm() {
       close()
     },

@@ -9,11 +9,10 @@ import type { Guess } from '@/models/guess'
 import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
 
-// const mapTypeId = 'satellite'
-
 const props = defineProps<{
   image?: Ref<Image | undefined>
   guess?: Ref<Guess | undefined>
+  marker_option?: Ref<google.maps.MarkerOptions | undefined>
   mapConfig?: Ref<MapConfig | undefined>
 }>()
 
@@ -64,7 +63,7 @@ const emit = defineEmits<{
         :mapTypeId="mapConfigValue?.mapTypeId"
         :tilt="mapConfigValue?.tilt"
       >
-        <Marker id="marker_guess" :options="{ position: guessValue?.guessedCoordinate }" />
+        <Marker v-if="marker_option?.value != undefined" id="marker_guess" :options="marker_option?.value" />
         <Marker id="marker_actual" :options="{ position: imageValue?.coordinate }" />
         <Polyline
           v-if="guessValue != undefined && imageValue != undefined"
