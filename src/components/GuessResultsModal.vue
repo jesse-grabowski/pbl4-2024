@@ -12,13 +12,16 @@ import type { MapConfig } from '@/models/mapConfig'
 const props = defineProps<{
   image?: Ref<Image | undefined>
   guess?: Ref<Guess | undefined>
-  marker_option?: Ref<google.maps.MarkerOptions | undefined>
+  guess_marker_option?: Ref<google.maps.MarkerOptions | undefined>
+  actual_marker_option?: Ref<google.maps.MarkerOptions | undefined>
   mapConfig?: Ref<MapConfig | undefined>
 }>()
 
 const imageValue = props.image
 const guessValue = props.guess
 const mapConfigValue = props.mapConfig
+const guessMarkerOption = props.guess_marker_option
+const actualMarkerOption = props.actual_marker_option
 
 const correctSound = new Audio(CorrectGuessSound)
 correctSound.loop = false
@@ -63,10 +66,10 @@ const emit = defineEmits<{
         :mapTypeId="mapConfigValue?.mapTypeId"
         :tilt="mapConfigValue?.tilt"
       >
-        <Marker v-if="marker_option?.value != undefined" id="marker_guess" :options="marker_option?.value" />
-        <Marker id="marker_actual" :options="{ position: imageValue?.coordinate }" />
+        <Marker v-if="guessMarkerOption" id="marker_guess" :options="guessMarkerOption" />
+        <Marker v-if="actualMarkerOption" id="marker_actual" :options="actualMarkerOption" />
         <Polyline
-          v-if="guessValue != undefined && imageValue != undefined"
+          v-if="guessValue && imageValue"
           :options="{
             path: [guessValue.guessedCoordinate, imageValue.coordinate],
             strokeColor: '#03FF1D',

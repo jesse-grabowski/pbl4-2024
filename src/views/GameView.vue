@@ -8,7 +8,8 @@ import GuessResultsModal from '@/components/GuessResultsModal.vue'
 import type { Guess } from '@/models/guess'
 import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
-import markerImage from '@/assets/images/marker.png'
+import guessMarkerImg from '@/assets/images/guessflag.png'
+import actualMarkerImg from '@/assets/images/correctguessflag.png'
 
 const images: Image[] = ImageData
 const guessedImageSet = new Set<number>()
@@ -17,7 +18,7 @@ const guessedImageSet = new Set<number>()
 const image = ref<Image | undefined>(undefined)
 
 const timer = ref(0)
-const timerText = ref('30:00')
+const timerText = ref('10:00')
 const guessCount = ref(0)
 const stageText = computed(() => `${guessCount.value} / 10`)
 const roundScore = ref(0)
@@ -58,9 +59,13 @@ const map_styles = [
 // let marker_position = OIC_COORD
 let marker_position = { lat: 0, lng: 0 }
 let actual_position = { lat: 0, lng: 0 }
-const marker_option = ref<google.maps.MarkerOptions>({
+const guess_marker_option = ref<google.maps.MarkerOptions>({
   position: marker_position,
   visible: false,
+})
+const actual_marker_option = ref<google.maps.MarkerOptions>({
+  position: actual_position,
+  visible: true,
 })
 const mapExpanded = ref(false)
 //#endregion Map Configs
@@ -132,13 +137,13 @@ function getDistance() {
   return distance
 }
 
-function updateMarkerPosition(event: google.maps.MapMouseEvent) {
+function updateGuessMarkerPosition(event: google.maps.MapMouseEvent) {
   marker_position = {
     lat: event.latLng?.lat() || 0,
     lng: event.latLng?.lng() || 0,
   }
-  marker_option.value = {
-    ...marker_option.value,
+  guess_marker_option.value = {
+    ...guess_marker_option.value,
     position: marker_position,
     visible: true,
   }
@@ -178,15 +183,16 @@ const { open, close } = useModal({
     image: image,
     guess: guess,
     mapConfig: mapConfig,
-    marker_option: marker_option,
+    guess_marker_option: guess_marker_option,
+    actual_marker_option: actual_marker_option,
     onConfirm() {
       close()
     },
     onClosed() {
       mapExpanded.value = false
       marker_position = { lat: 0, lng: 0 }
-      marker_option.value = {
-        ...marker_option.value,
+      guess_marker_option.value = {
+        ...guess_marker_option.value,
         visible: false,
       }
       selectedFloor.value = '1F'
@@ -214,14 +220,22 @@ async function getRandomImage() {
   } while (guessedImageSet.has(randomInt))
   image.value = images[randomInt]
   actual_position = image.value.coordinate
+  actual_marker_option.value = {
+    ...actual_marker_option.value,
+    position: actual_position,
+  }
   guessCount.value++
   guessedImageSet.add(randomInt)
 }
 
 onMounted(async () => {
   const { Size } = (await google.maps.importLibrary('core')) as google.maps.CoreLibrary
-  marker_option.value.icon = {
-    url: markerImage,
+  guess_marker_option.value.icon = {
+    url: guessMarkerImg,
+    scaledSize: new Size(40, 40),
+  }
+  actual_marker_option.value.icon = {
+    url: actualMarkerImg,
     scaledSize: new Size(40, 40),
   }
   await getRandomImage()
@@ -262,9 +276,9 @@ onMounted(async () => {
           :zoom="currentZoom"
           :mapTypeId="mapTypeId"
           :tilt="0"
-          @click="updateMarkerPosition"
+          @click="updateGuessMarkerPosition"
         >
-          <Marker id="marker" :options="marker_option" />
+          <Marker id="marker" :options="guess_marker_option" />
         </GoogleMap>
       </div>
       <label class="map-expanded" aria-label="Resize map">
