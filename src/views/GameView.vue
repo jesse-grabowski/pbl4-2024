@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { GoogleMap, Marker } from 'vue3-google-map'
-import { Chance } from 'chance'
-import ImageData from '@/data/image-data'
 import DynamicImage from '@/components/DynamicImage.vue'
 import { useModal } from 'vue-final-modal'
 import GuessResultsModal from '@/components/GuessResultsModal.vue'
@@ -11,9 +9,7 @@ import type { MapConfig } from '@/models/mapConfig'
 import guessMarkerImg from '@/assets/images/guessflag.png'
 import actualMarkerImg from '@/assets/images/targetflag.png'
 import { CONFIG } from '@/data/gameview_config'
-
-const images: Image[] = ImageData
-const guessedImageSet = new Set<number>()
+import { getRandomImage } from '@/utils/image-support'
 
 // we need to include the width and height as hints for the browser to reserve enough space
 const image = ref<Image | undefined>(undefined)
@@ -35,7 +31,6 @@ const actualPosition = ref({ lat: 0, lng: 0 })
 const center = ref({ lat: 0, lng: 0 })
 
 const mapExpanded = ref(false)
-const timer = ref(0)
 const guessCount = ref(0)
 const stageText = computed(() => `${guessCount.value} / 10`)
 const roundScore = ref(0)
@@ -43,10 +38,10 @@ const totalScore = ref(0)
 const maxScore = 5000
 const distanceForZero = 40
 
-const distance = ref(0)
-const floorDiff = ref(0)
-const result = ref(false)
-const correctFloor = ref(false)
+let distance = 0
+let floorDiff = 0
+let correctGuess = false
+
 const guessMarkerOption = ref<google.maps.MarkerOptions>({
   position: markerPosition.value,
   visible: false,
@@ -55,6 +50,35 @@ const actualMarkerOption = ref<google.maps.MarkerOptions>({
   position: actualPosition.value,
   visible: true,
 })
+
+//#region Computed
+const guess = computed<Guess | undefined>(() => {
+  return {
+    correct: correctGuess,
+    distance: distance,
+    time: timerText.value,
+    stage: stageText.value,
+    guessedCoordinate: markerPosition.value,
+    floorDiff: floorDiff,
+  }
+})
+
+const mapConfig = computed<MapConfig | undefined>(() => {
+  return {
+    apikey: apikey,
+    center: center.value,
+    zoomcontrol: zoomcontrol,
+    maptypecontrol: maptypecontrol,
+    streetviewcontrol: streetviewcontrol,
+    map_styles: map_styles,
+    zoom: resultZoom.value,
+    mapTypeId: 'satellite',
+    tilt: 0,
+  }
+})
+//#endregion Computed
+
+//#region Zoom
 const currentZoom = ref(initialZoom)
 const resultZoom = ref(initialZoom)
 
@@ -65,47 +89,46 @@ function toggleMapExpansionZoom() {
     currentZoom.value -= 1.4
   }
 }
+//#endregion Zoom
 
-const timerInterval = ref<number | undefined>(undefined)
+//#region Timer
+let timerInterval = 1000
+let timerSeconds = 0
 
 function startTimer() {
   timerText.value = '30'
-  if (timerInterval.value !== undefined) {
-    clearInterval(timerInterval.value)
+  if (timerInterval !== 1000) {
+    clearInterval(timerInterval)
   }
-  timer.value = 30
-  timerInterval.value = setInterval(() => {
-    if (timer.value > 0) {
-      timer.value--
-      const seconds = timer.value
-      timerText.value = `${seconds < 10 ? '0' : ''}${seconds}`
+  timerSeconds = 30
+  timerInterval = setInterval(() => {
+    if (timerSeconds > 0) {
+      timerSeconds--
+      timerText.value = `${timerSeconds < 10 ? '0' : ''}${timerSeconds}`
     } else {
-      clearInterval(timerInterval.value)
+      clearInterval(timerInterval)
     }
   }, 1000)
 }
+//#endregion Timer
 
 function evaluate() {
-  floorDiff.value = Math.abs(Number(selectedFloor.value[0]) - Number(image.value?.floor))
-  distance.value = getDistance()
-  if (distance.value == 0) {
+  floorDiff = Math.abs(Number(selectedFloor.value[0]) - Number(image.value?.floor))
+  distance = getDistance()
+  if (distance == 0) {
     roundScore.value = maxScore
   } else {
     // roundScore.value = 1/distance.value * 10000
-    roundScore.value = Math.max(maxScore - ((distance.value + 10 * floorDiff.value) * maxScore) / distanceForZero, 0)
+    roundScore.value = Math.max(maxScore - ((distance + 10 * floorDiff) * maxScore) / distanceForZero, 0)
   }
 
   console.log('round score: ', roundScore.value)
 
   totalScore.value += roundScore.value
 
-  if (floorDiff.value == 0) {
-    correctFloor.value = true
-  } else correctFloor.value = false
-
-  if (roundScore.value > score_boundary.value && correctFloor.value) {
-    result.value = true
-  } else result.value = false
+  if (roundScore.value > score_boundary && floorDiff == 0) {
+    correctGuess = true
+  } else correctGuess = false
 
   if (guessCount.value == 10) {
     totalScore.value *= totalScore.value
@@ -154,31 +177,6 @@ function updateGuessMarkerPosition(event: google.maps.MapMouseEvent) {
   console.log(resultZoom.value, getDistance())
 }
 
-const guess = computed<Guess | undefined>(() => {
-  return {
-    correct: result.value,
-    distance: distance.value,
-    time: timerText.value,
-    stage: stageText.value,
-    guessedCoordinate: markerPosition.value,
-    floorDiff: floorDiff.value,
-  }
-})
-
-const mapConfig = computed<MapConfig | undefined>(() => {
-  return {
-    apikey: apikey,
-    center: center.value,
-    zoomcontrol: zoomcontrol,
-    maptypecontrol: maptypecontrol,
-    streetviewcontrol: streetviewcontrol,
-    map_styles: map_styles,
-    zoom: resultZoom.value,
-    mapTypeId: 'satellite',
-    tilt: 0,
-  }
-})
-
 const { open, close } = useModal({
   component: GuessResultsModal,
   attrs: {
@@ -212,27 +210,17 @@ async function doGuess() {
 }
 
 async function startNextRound() {
-  await getRandomImage()
-  startTimer()
-}
-
-async function getRandomImage() {
-  // a temp return for now because we don't have enough images, after getting 10+ images we can remove this if statement
-  if (guessedImageSet.size === images.length) {
+  guessCount.value++
+  image.value = await getRandomImage()
+  if (image.value === undefined) {
     return
   }
-  let randomInt
-  do {
-    randomInt = Chance().integer({ min: 0, max: images.length - 1 })
-  } while (guessedImageSet.has(randomInt))
-  image.value = images[randomInt]
   actualPosition.value = image.value.coordinate
   actualMarkerOption.value = {
     ...actualMarkerOption.value,
     position: actualPosition.value,
   }
-  guessCount.value++
-  guessedImageSet.add(randomInt)
+  startTimer()
 }
 
 onMounted(async () => {
