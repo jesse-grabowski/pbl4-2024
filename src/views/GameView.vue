@@ -9,7 +9,7 @@ import type { Guess } from '@/models/guess'
 import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
 import guessMarkerImg from '@/assets/images/guessflag.png'
-import actualMarkerImg from '@/assets/images/correctguessflag.png'
+import actualMarkerImg from '@/assets/images/targetflag.png'
 
 const images: Image[] = ImageData
 const guessedImageSet = new Set<number>()
