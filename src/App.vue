@@ -7,12 +7,14 @@ import { ModalsContainer } from 'vue-final-modal'
   <div class="container">
     <header>
       <div class="mobile-header">
-        <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-        <label for="toggleNavigation" class="mobile-only">
-          <v-icon name="fa-hamburger" scale="2" />
+        <RouterLink to="/">
+          <img alt="Vue logo" class="logo" src="@/assets/logo.png" width="125" height="125" />
+        </RouterLink>
+        <label for="toggleNavigation" class="mobile-only" aria-label="Toggle Navigation">
+          <v-icon name="gi-hamburger-menu" scale="2" />
         </label>
       </div>
-      <input id="toggleNavigation" class="mobile-only" type="checkbox" value="false" />
+      <input id="toggleNavigation" class="mobile-only" type="checkbox" value="false" aria-hidden="true" />
       <nav>
         <ul>
           <li><RouterLink to="/">Home</RouterLink></li>
@@ -91,7 +93,7 @@ nav {
 
 #toggleNavigation {
   position: absolute;
-  opacity: 0;
+  display: none;
 }
 
 @media screen and (max-width: 1024px) {
