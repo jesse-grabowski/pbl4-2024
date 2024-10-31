@@ -215,7 +215,7 @@ onMounted(async () => {
     <div class="timer game-control" v-text="timerText"></div>
     <div class="stage game-control" v-text="stageText"></div>
     <button class="guess game-control" @click="doGuess">Guess</button>
-    <select class="floor game-control" v-model="selectedFloor">
+    <select class="floor game-control" v-model="selectedFloor" aria-label="Floor">
       <option>1F</option>
       <option>2F</option>
       <option>3F</option>
@@ -241,7 +241,7 @@ onMounted(async () => {
           <Marker id="marker" :options="marker_option" />
         </GoogleMap>
       </div>
-      <label class="map-expanded">
+      <label class="map-expanded" aria-label="Resize map">
         <v-icon v-if="mapExpanded" name="fa-compress-arrows-alt" scale="2" />
         <v-icon v-if="!mapExpanded" name="fa-expand-arrows-alt" scale="2" />
         <input type="checkbox" v-model="mapExpanded" @change="toggleMapExpansionZoom" />
