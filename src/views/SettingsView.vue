@@ -78,7 +78,7 @@ const selectedLanguage = ref("English");
 }
 
 .slider-label {
-  font-size: 1.3vw;
+  font-size: 1.3rem;
   min-width: 140px; /* Ensures labels like "Master Volume" don't break */
   text-align: right;
   margin-right: 1rem;
@@ -90,7 +90,7 @@ input[type="range"] {
 }
 
 .slider-value {
-  font-size: 1.2vw;
+  font-size: 1.2rem;
   min-width: 40px;
   text-align: right;
 }
