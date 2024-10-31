@@ -1,6 +1,5 @@
 export const CONFIG = {
   timerText: ref('30'),
-  distance: ref(0),
   selectedFloor: ref('1F'),
   score_boundary: 400,
   apikey: 'AIzaSyCcQMDjEPrA9cCZAHQfPW1n47H4r5Bx4EI',
