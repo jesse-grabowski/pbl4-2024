@@ -219,6 +219,12 @@ onMounted(async () => {
       <option>1F</option>
       <option>2F</option>
       <option>3F</option>
+      <option>4F</option>
+      <option>5F</option>
+      <option>6F</option>
+      <option>7F</option>
+      <option>8F</option>
+      <option>9F</option>
     </select>
     <div class="map-holder">
       <!-- this needs to be here to make the map a circle, don't ask -->
