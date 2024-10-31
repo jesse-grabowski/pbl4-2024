@@ -7,7 +7,7 @@ import { ModalsContainer } from 'vue-final-modal'
   <div class="container">
     <header>
       <div class="mobile-header">
-        <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+        <img alt="Vue logo" class="logo" src="@/assets/logo.png" width="125" height="125" />
         <label for="toggleNavigation" class="mobile-only">
           <v-icon name="fa-hamburger" scale="2" />
         </label>
