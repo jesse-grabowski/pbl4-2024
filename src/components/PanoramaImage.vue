@@ -30,17 +30,12 @@ SOFTWARE.
 -->
 <!--Panorama viewer pannellum wrap.-->
 <template>
-<div
-    class="vue-pannellum"
-    @mouseup="onMouseUp"
-    @touchmove="onTouchMove"
-    @touchend="onTouchEnd"
->
+  <div class="vue-pannellum" @mouseup="onMouseUp" @touchmove="onTouchMove" @touchend="onTouchEnd">
     <div class="info">{{ info }}</div>
     <div class="default-slot">
-    <slot/>
+      <slot />
     </div>
-</div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -52,11 +47,10 @@ SOFTWARE.
 // biome-ignore lint: disable
 import 'pannellum'
 import 'pannellum/build/pannellum.css'
-
-import _debounce from 'lodash.debounce'
+import { debounce } from 'es-toolkit'
 
 export default {
-props: {
+  props: {
     debug: { type: Boolean, default: false },
     src: { type: [String, Object], required: true },
     preview: { type: String, default: '' },
@@ -76,106 +70,99 @@ props: {
     maxHfov: { type: Number, default: 120 },
     yaw: { type: Number, default: 0 },
     pitch: { type: Number, default: 0 },
-    crossOrigin: {type: String, default: 'anonymous' },
-    haov: {type: Number, default: 360 },
-    vaov: {type: Number, default: 180 },
-},
-data () {
+    crossOrigin: { type: String, default: 'anonymous' },
+    haov: { type: Number, default: 360 },
+    vaov: { type: Number, default: 180 },
+  },
+  data() {
     return {
-    viewer: null,
-    info: '',
-    rafId: -1,
+      viewer: null,
+      info: '',
+      rafId: -1,
     }
-},
-computed: {
-    srcOption () {
-    if (typeof this.src === 'string') {
+  },
+  computed: {
+    srcOption() {
+      if (typeof this.src === 'string') {
         return {
-        type: 'equirectangular',
-        panorama: this.src,
-        hotSpots: this.hotSpots,
+          type: 'equirectangular',
+          panorama: this.src,
+          hotSpots: this.hotSpots,
         }
-    } else if (typeof this.src === 'object') {
+      } else if (typeof this.src === 'object') {
         if (this.src.px && this.src.ny) {
-        return {
+          return {
             type: 'cubemap',
-            cubeMap: [
-            this.src.pz,
-            this.src.px,
-            this.src.nz,
-            this.src.nx,
-            this.src.py,
-            this.src.ny,
-            ],
+            cubeMap: [this.src.pz, this.src.px, this.src.nz, this.src.nx, this.src.py, this.src.ny],
             hotSpots: this.hotSpots,
-        }
+          }
         } else if (this.src.scenes) {
-        return {
+          return {
             default: this.src.default,
             scenes: this.src.scenes,
-        }
+          }
         } else {
-        console.error('[vue-pannellum] Unknown src type')
-        return undefined
+          console.error('[vue-pannellum] Unknown src type')
+          return undefined
         }
-    } else {
+      } else {
         console.error('[vue-pannellum] Unknown src type: ' + typeof this.src)
         return undefined
-    }
+      }
     },
-},
-watch: {
-    src (val) {
-    this.$el.innerHTML = ''
-    this.$nextTick(this.load)
+  },
+  watch: {
+    src(val) {
+      this.$el.innerHTML = ''
+      this.$nextTick(this.load)
     },
-    hfov (val) {
-    if (this.viewer) this.viewer.setHfov(val, false)
+    hfov(val) {
+      if (this.viewer) this.viewer.setHfov(val, false)
     },
-    yaw (val) {
-    if (this.viewer) this.viewer.setYaw(val, false)
+    yaw(val) {
+      if (this.viewer) this.viewer.setYaw(val, false)
     },
-    pitch (val) {
-    if (this.viewer) this.viewer.setPitch(val, false)
+    pitch(val) {
+      if (this.viewer) this.viewer.setPitch(val, false)
     },
-    maxHfov (val) {
-    if (this.viewer) {
+    maxHfov(val) {
+      if (this.viewer) {
         this.viewer.setHfovBounds([this.minHfov, this.maxHfov])
-    }
+      }
     },
-    minHfov (val) {
-    if (this.viewer) {
+    minHfov(val) {
+      if (this.viewer) {
         this.viewer.setHfovBounds([this.minHfov, this.maxHfov])
-    }
+      }
     },
-    autoRotate (val) {
-    if (val) {
+    autoRotate(val) {
+      if (val) {
         this.viewer.startAutoRotate()
-    } else {
+      } else {
         this.viewer.stopAutoRotate()
         if (this.orientation) this.viewer.startOrientation()
-    }
+      }
     },
-    orientation (val) {
-    if (val) {
+    orientation(val) {
+      if (val) {
         this.viewer.startOrientation()
-    } else {
+      } else {
         this.viewer.stopOrientation()
         if (this.autoRotate) this.viewer.startAutoRotate()
-    }
+      }
     },
-},
-mounted () {
+  },
+  mounted() {
     this.load()
     this.rafId = window.requestAnimationFrame(this.loop)
-},
-beforeUnmount() {
+  },
+  beforeUnmount() {
     this.viewer.destroy()
     window.cancelAnimationFrame(this.rafId)
-},
-methods: {
-    load () {
-    let options = {
+  },
+  methods: {
+    load() {
+      let options = {
         autoLoad: this.autoLoad,
         autoRotate: this.autoRotate === true ? -2 : 0,
         orientationOnByDefault: this.orientation,
@@ -193,88 +180,88 @@ methods: {
         haov: this.haov,
         vaov: this.vaov,
         ...this.srcOption,
-    }
-    // console.log('options', options)
-    this.viewer = window.pannellum.viewer(this.$el, options)
-    this.viewer.on('load', () => {
+      }
+      // console.log('options', options)
+      this.viewer = window.pannellum.viewer(this.$el, options)
+      this.viewer.on('load', () => {
         this.$emit('load')
-    })
-    this.viewer.on('error', (err) => {
+      })
+      this.viewer.on('error', err => {
         this.$emit('error', err)
-    })
-    if (this.showInfo === false) {
+      })
+      if (this.showInfo === false) {
         let el = this.$el.querySelector('.pnlm-panorama-info')
         // Note: Using display will not work when in tour mode and switch scene
         if (el) el.style.visibility = 'hidden'
-    }
-    if (this.showZoom === false) {
+      }
+      if (this.showZoom === false) {
         let el = this.$el.querySelector('.pnlm-zoom-controls')
         if (el) el.style.display = 'none'
-    }
-    if (this.showFullscreen === false) {
+      }
+      if (this.showFullscreen === false) {
         let el = this.$el.querySelector('.pnlm-fullscreen-toggle-button')
         if (el) el.style.display = 'none'
-    }
+      }
     },
-    loop () {
-    this.rafId = window.requestAnimationFrame(this.loop)
-    let hfov = this.viewer.getHfov()
-    let yaw = this.viewer.getYaw()
-    let pitch = this.viewer.getPitch()
-    if (pitch > 90) pitch = 90
-    else if (pitch < -90) pitch = -90
-    if (hfov != this.hfov) this.$emit('update:hfov', hfov)
-    if (yaw != this.yaw) this.$emit('update:yaw', yaw)
-    if (pitch != this.pitch) this.$emit('update:pitch', pitch)
+    loop() {
+      this.rafId = window.requestAnimationFrame(this.loop)
+      let hfov = this.viewer.getHfov()
+      let yaw = this.viewer.getYaw()
+      let pitch = this.viewer.getPitch()
+      if (pitch > 90) pitch = 90
+      else if (pitch < -90) pitch = -90
+      if (hfov != this.hfov) this.$emit('update:hfov', hfov)
+      if (yaw != this.yaw) this.$emit('update:yaw', yaw)
+      if (pitch != this.pitch) this.$emit('update:pitch', pitch)
     },
-    onMouseUp () {
-    if (this.debug) this.info += ' mu'
-    this.debounceRotate()
+    onMouseUp() {
+      if (this.debug) this.info += ' mu'
+      this.debounceRotate()
     },
-    onTouchMove () {
-    if (this.debug) this.info += ' tm'
+    onTouchMove() {
+      if (this.debug) this.info += ' tm'
     },
-    onTouchEnd () {
-    if (this.debug) this.info += ' te'
-    this.debounceRotate()
+    onTouchEnd() {
+      if (this.debug) this.info += ' te'
+      this.debounceRotate()
     },
-    debounceRotate: _debounce(function () {
-    // priority of orientation is higher
-    if (this.orientation) this.viewer.startOrientation()
-    else if (this.autoRotate) this.viewer.startAutoRotate()
+    debounceRotate: debounce(function () {
+      // priority of orientation is higher
+      if (this.orientation) this.viewer.startOrientation()
+      else if (this.autoRotate) this.viewer.startAutoRotate()
     }, 3000),
-},
+  },
 }
 </script>
 
 <style>
 .pnlm-ui .pnlm-about-msg {
-display: none !important;
+  display: none !important;
 }
 
 .pnlm-ui .pnlm-orientation-button {
-display: none !important;
+  display: none !important;
 }
 </style>
 
 <style scoped>
 .vue-pannellum {
-position: relative;
+  position: relative;
 }
 
 .info {
-position: absolute;
-background-color: hsla(0, 0%, 100%, 0.5);
-top: 0;
-left: 0;
-width: 100%;
-z-index: 2;
+  position: absolute;
+  background-color: hsla(0, 0%, 100%, 0.5);
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 2;
 }
 
 .default-slot {
-position: absolute;
-left: 0;
-bottom: 0;
-z-index: 2;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 2;
 }
 </style>
