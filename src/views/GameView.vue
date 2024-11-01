@@ -16,7 +16,6 @@ const image = ref<Image | undefined>(undefined)
 
 //#region Config
 
-const timerText = CONFIG.timerText
 const selectedFloor = CONFIG.selectedFloor
 const score_boundary = CONFIG.score_boundary
 const apikey = CONFIG.apikey
@@ -34,7 +33,7 @@ const mapExpanded = CONFIG.mapExpanded
 const guessIndex = ref(0)
 let currentRoundScore = 0
 const roundScores = new Array<number>(10)
-const maxScore = 5000
+const maxScore = 2000
 const distanceForZeroScore = 40
 
 let markerPosition = { lat: 0, lng: 0 }
@@ -57,6 +56,8 @@ const actualMarkerOption = ref<google.maps.MarkerOptions>({
 //#region Computed
 
 const stageText = computed(() => `${guessIndex.value} / 10`)
+
+const timerText = computed(() => `${timerSeconds.value < 10 ? '0' : ''}${timerSeconds.value}`)
 
 const guess = computed<Guess | undefined>(() => {
   return {
@@ -103,18 +104,16 @@ function toggleMapExpansionZoom() {
 //#region Timer
 
 let timerInterval = 1000
-let timerSeconds = 0
+const timerSeconds = ref(0)
 
 function startTimer() {
-  timerText.value = '30'
   if (timerInterval !== 1000) {
     clearInterval(timerInterval)
   }
-  timerSeconds = 30
+  timerSeconds.value = 30
   timerInterval = setInterval(() => {
-    if (timerSeconds > 0) {
-      timerSeconds--
-      timerText.value = `${timerSeconds < 10 ? '0' : ''}${timerSeconds}`
+    if (timerSeconds.value > 0) {
+      timerSeconds.value--
     } else {
       evaluate()
       startNextRound()
@@ -131,11 +130,14 @@ function evaluate() {
   }
   floorDiff = Math.abs(Number(selectedFloor.value[0]) - image.value.floor)
   horizontalDistance = getHorizontalDistance()
-  if (horizontalDistance > distanceForZeroScore || timerSeconds === 0) {
+  if (horizontalDistance > distanceForZeroScore || timerSeconds.value === 0) {
     currentRoundScore = 0
   } else {
     const actualDistance = Math.sqrt(Math.pow(horizontalDistance, 2) + Math.pow(5 * floorDiff, 2))
-    currentRoundScore = maxScore - (actualDistance * maxScore) / distanceForZeroScore
+    currentRoundScore = (maxScore - (actualDistance * maxScore) / distanceForZeroScore) * (timerSeconds.value / 10)
+  }
+  if (currentRoundScore > maxScore) {
+    currentRoundScore = maxScore
   }
   roundScores[guessIndex.value - 1] = currentRoundScore
   console.log('current round score: ', currentRoundScore)
