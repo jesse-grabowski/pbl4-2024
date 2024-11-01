@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type { Settings } from '@/models/settings'
 
 const masterVolume = ref(45)
@@ -10,18 +10,17 @@ const selectedLanguage = ref('English')
 
 const settings = computed<Settings | undefined>(() => {
   return {
-    masterVolume : masterVolume.value,
-    musicVolume : musicVolume.value,
-    gameplayVolume : gameplayVolume.value,
-    effectsVolume : effectsVolume.value,
-    selectedLanguage : selectedLanguage.value,
+    masterVolume: masterVolume.value,
+    musicVolume: musicVolume.value,
+    gameplayVolume: gameplayVolume.value,
+    effectsVolume: effectsVolume.value,
+    selectedLanguage: selectedLanguage.value,
   }
 })
 
-async function confirm(){
+async function confirm() {
   return settings
 }
-
 </script>
 
 <template>
@@ -44,15 +43,13 @@ async function confirm(){
       <span class="slider-value">{{ effectsVolume }}</span>
 
       <label for="language" class="slider-label">Language</label>
-      <div></div>
       <select v-model="selectedLanguage" class="language-select">
         <option value="English">English</option>
         <option value="Japanese">Japanese</option>
       </select>
-    </div>
-    <div>
-      <!-- Button triggers the `handleButtonClick` method when clicked -->
-      <button @click="confirm">Click Me!</button>
+
+      <!-- Centered Confirm button -->
+      <button @click="confirm" class="confirm-button">Confirm Changes</button>
     </div>
   </div>
 </template>
@@ -93,12 +90,13 @@ async function confirm(){
   color: white;
   display: grid;
   grid-template-columns: min-content 1fr min-content;
+  grid-template-rows: auto auto;
   align-items: center;
 }
 
 .slider-label {
   font-size: 1.3rem;
-  min-width: 140px; /* Ensures labels like "Master Volume" don't break */
+  min-width: 140px;
   text-align: right;
   margin-right: 1rem;
 }
@@ -121,5 +119,23 @@ input[type='range'] {
   border: none;
   padding: 0.3rem;
   border-radius: 5px;
+}
+
+.confirm-button {
+  grid-column: 1 / -1;
+  justify-self: center;
+  margin-top: 1.5rem;
+  font-size: 1.2rem;
+  padding: 0.7rem 1.5rem;
+  background-color: #ea0303;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.confirm-button:hover {
+  background-color: rgb(2, 159, 2);
 }
 </style>
