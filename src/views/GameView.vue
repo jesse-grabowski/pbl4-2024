@@ -111,7 +111,7 @@ function startTimer() {
     clearInterval(timerInterval)
   }
   timerSeconds.value = 30
-  timerInterval = setInterval(() => {
+  timerInterval = window.setInterval(() => {
     if (timerSeconds.value > 0) {
       timerSeconds.value--
     } else {
