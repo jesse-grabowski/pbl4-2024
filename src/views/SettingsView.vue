@@ -1,3 +1,29 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import type { Settings } from '@/models/settings'
+
+const masterVolume = ref(45)
+const musicVolume = ref(45)
+const gameplayVolume = ref(45)
+const effectsVolume = ref(45)
+const selectedLanguage = ref('English')
+
+const settings = computed<Settings | undefined>(() => {
+  return {
+    masterVolume : masterVolume.value,
+    musicVolume : musicVolume.value,
+    gameplayVolume : gameplayVolume.value,
+    effectsVolume : effectsVolume.value,
+    selectedLanguage : selectedLanguage.value,
+  }
+})
+
+async function confirm(){
+  return settings
+}
+
+</script>
+
 <template>
   <div class="settings-page">
     <div class="sliders-container">
@@ -24,18 +50,12 @@
         <option value="Japanese">Japanese</option>
       </select>
     </div>
+    <div>
+      <!-- Button triggers the `handleButtonClick` method when clicked -->
+      <button @click="confirm">Click Me!</button>
+    </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-
-const masterVolume = ref(45)
-const musicVolume = ref(45)
-const gameplayVolume = ref(45)
-const effectsVolume = ref(45)
-const selectedLanguage = ref('English')
-</script>
 
 <style scoped>
 .settings-page {
