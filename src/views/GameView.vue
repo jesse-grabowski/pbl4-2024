@@ -10,6 +10,7 @@ import guessMarkerImg from '@/assets/images/guessflag.png'
 import actualMarkerImg from '@/assets/images/targetflag.png'
 import { CONFIG } from '@/data/gameview_config'
 import { getRandomImage } from '@/utils/image-support'
+import { isUndefined } from 'es-toolkit'
 
 // we need to include the width and height as hints for the browser to reserve enough space
 const image = ref<Image | undefined>(undefined)
@@ -125,10 +126,10 @@ function startTimer() {
 //#endregion Timer
 
 function evaluate() {
-  if (image.value === undefined) {
+  if (isUndefined(image.value)) {
     throw new Error('Image is undefined')
   }
-  floorDiff = Math.abs(Number(selectedFloor.value[0]) - image.value.floor)
+  floorDiff = Math.abs(parseInt(selectedFloor.value[0]) - image.value.floor)
   horizontalDistance = getHorizontalDistance()
   if (horizontalDistance > distanceForZeroScore || timerSeconds.value === 0) {
     currentRoundScore = 0
@@ -224,7 +225,7 @@ async function doGuess() {
 async function startNextRound() {
   guessIndex.value++
   image.value = await getRandomImage()
-  if (image.value === undefined) {
+  if (isUndefined(image.value)) {
     // show result here
     return
   }
