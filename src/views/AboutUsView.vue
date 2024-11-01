@@ -5,7 +5,7 @@
 <template>
     <div class="container">
       <div class="image-container">
-        <img src="@/assets/images/guess/oic-4.jpeg" alt="Ritsumeikan Campus" />
+        <img src="@/assets/images/about_us_background.jpeg" alt="Ritsumeikan Campus" />
       </div>
       <div class="content">
         <h2>Who Are We</h2>
