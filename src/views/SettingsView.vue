@@ -1,12 +1,3 @@
-<script setup lang="ts">
-
-const masterVolume = ref(0)
-const musicVolume = ref(0)
-const gameplayVolume = ref(0)
-const effectsVolume = ref(0)
-const selectedLanguage = ref("")
-
-</script>
 <template>
   <div class="settings-page">
     <div class="sliders-container">
@@ -37,17 +28,17 @@ const selectedLanguage = ref("")
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 
-const masterVolume = ref(45);
-const musicVolume = ref(45);
-const gameplayVolume = ref(45);
-const effectsVolume = ref(45);
-const selectedLanguage = ref("English");
+const masterVolume = ref(45)
+const musicVolume = ref(45)
+const gameplayVolume = ref(45)
+const effectsVolume = ref(45)
+const selectedLanguage = ref('English')
 </script>
 
 <style scoped>
-.settings-page {  
+.settings-page {
   flex-grow: 1;
   background-image: url('@/assets/images/background_oic.jpg');
   background-size: cover;
@@ -92,7 +83,7 @@ const selectedLanguage = ref("English");
   margin-right: 1rem;
 }
 
-input[type="range"] {
+input[type='range'] {
   width: 100%;
   margin: 0 1vw;
 }
