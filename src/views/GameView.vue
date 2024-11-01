@@ -248,6 +248,10 @@ onMounted(async () => {
   }
   await startNextRound()
 })
+
+onUnmounted(() => {
+  clearInterval(timerInterval)
+})
 </script>
 
 <template>

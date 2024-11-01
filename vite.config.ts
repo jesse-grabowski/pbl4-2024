@@ -44,7 +44,7 @@ export default defineConfig({
     AutoImport({
       imports: [
         {
-          vue: ['ref', 'onMounted', 'computed'],
+          vue: ['ref', 'onMounted', 'onUnmounted', 'computed'],
         },
         VueRouterAutoImports,
       ],
