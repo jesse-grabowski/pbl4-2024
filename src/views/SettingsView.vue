@@ -10,16 +10,16 @@ const selectedLanguage = ref('English')
 
 const settings = computed<Settings | undefined>(() => {
   return {
-    masterVolume : masterVolume.value,
-    musicVolume : musicVolume.value,
-    gameplayVolume : gameplayVolume.value,
-    effectsVolume : effectsVolume.value,
+    masterVolume : parseInt(masterVolume.value.toString()),
+    musicVolume : parseInt(musicVolume.value.toString()),
+    gameplayVolume : parseInt(gameplayVolume.value.toString()),
+    effectsVolume : parseInt(effectsVolume.value.toString()),
     selectedLanguage : selectedLanguage.value,
   }
 })
 
 async function confirm(){
-  return settings
+  console.log(settings.value)
 }
 
 </script>
@@ -32,7 +32,7 @@ async function confirm(){
       <span class="slider-value">{{ masterVolume }}</span>
 
       <label for="music" class="slider-label">Music</label>
-      <input type="range" id="music" min="0" max="100" v-model="musicVolume" />
+      <input type="range" id="music" min=0 max=100 v-model="musicVolume" />
       <span class="slider-value">{{ musicVolume }}</span>
 
       <label for="gameplay" class="slider-label">Gameplay</label>
@@ -49,9 +49,6 @@ async function confirm(){
         <option value="English">English</option>
         <option value="Japanese">Japanese</option>
       </select>
-    </div>
-    <div>
-      <!-- Button triggers the `handleButtonClick` method when clicked -->
       <button @click="confirm">Click Me!</button>
     </div>
   </div>
@@ -121,5 +118,18 @@ input[type='range'] {
   border: none;
   padding: 0.3rem;
   border-radius: 5px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #369f74;
 }
 </style>
