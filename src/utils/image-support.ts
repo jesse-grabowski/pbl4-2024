@@ -1,4 +1,4 @@
-import { Chance } from 'chance'
+import { randomInt } from 'es-toolkit'
 import ImageData from '@/data/image-data'
 import type { Image } from '@/models/image'
 
@@ -10,11 +10,11 @@ export async function getRandomImage(): Promise<Image | undefined> {
   if (guessedImageSet.size === images.length) {
     return undefined
   }
-  let randomInt
+  let randomIndex
   do {
-    randomInt = Chance().integer({ min: 0, max: images.length - 1 })
-  } while (guessedImageSet.has(randomInt))
-  const image = images[randomInt]
-  guessedImageSet.add(randomInt)
+    randomIndex = randomInt(0, images.length - 1)
+  } while (guessedImageSet.has(randomIndex))
+  const image = images[randomIndex]
+  guessedImageSet.add(randomIndex)
   return image
 }
