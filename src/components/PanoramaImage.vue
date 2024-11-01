@@ -160,6 +160,7 @@ export default {
     this.viewer.destroy()
     window.cancelAnimationFrame(this.rafId)
   },
+  emits: ['load'],
   methods: {
     load() {
       let options = {

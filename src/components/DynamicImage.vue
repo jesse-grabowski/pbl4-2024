@@ -5,6 +5,10 @@ import type { Image } from '@/models/image'
 const props = defineProps<{
   image?: Image | undefined
 }>()
+
+const emits = defineEmits<{
+  (e: 'image-loaded'): void
+}>()
 </script>
 
 <template>
@@ -16,6 +20,7 @@ const props = defineProps<{
       :src="props.image.url"
       :haov="props.image.haov"
       :vaov="props.image.vaov"
+      v-on:load="emits('image-loaded')"
     />
   </div>
 </template>

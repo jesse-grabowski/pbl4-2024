@@ -233,7 +233,6 @@ async function startNextRound() {
     ...actualMarkerOption.value,
     position: actualPosition,
   }
-  startTimer()
 }
 
 onMounted(async () => {
@@ -256,7 +255,7 @@ onUnmounted(() => {
 
 <template>
   <div class="game">
-    <DynamicImage class="image-container" :image="image" />
+    <DynamicImage class="image-container" :image="image" v-on:image-loaded="startTimer" />
     <div class="timer game-control" v-text="timerText"></div>
     <div class="stage game-control" v-text="stageText"></div>
     <button class="guess game-control" @click="doGuess">Guess</button>
