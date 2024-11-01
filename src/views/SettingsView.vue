@@ -10,16 +10,16 @@ const selectedLanguage = ref('English')
 
 const settings = computed<Settings | undefined>(() => {
   return {
-    masterVolume: masterVolume.value,
-    musicVolume: musicVolume.value,
-    gameplayVolume: gameplayVolume.value,
-    effectsVolume: effectsVolume.value,
-    selectedLanguage: selectedLanguage.value,
+    masterVolume : parseInt(masterVolume.value.toString()),
+    musicVolume : parseInt(musicVolume.value.toString()),
+    gameplayVolume : parseInt(gameplayVolume.value.toString()),
+    effectsVolume : parseInt(effectsVolume.value.toString()),
+    selectedLanguage : selectedLanguage.value,
   }
 })
 
-async function confirm() {
-  return settings
+async function confirm(){
+  console.log(settings.value)
 }
 </script>
 
@@ -31,7 +31,7 @@ async function confirm() {
       <span class="slider-value">{{ masterVolume }}</span>
 
       <label for="music" class="slider-label">Music</label>
-      <input type="range" id="music" min="0" max="100" v-model="musicVolume" />
+      <input type="range" id="music" min=0 max=100 v-model="musicVolume" />
       <span class="slider-value">{{ musicVolume }}</span>
 
       <label for="gameplay" class="slider-label">Gameplay</label>
@@ -119,23 +119,5 @@ input[type='range'] {
   border: none;
   padding: 0.3rem;
   border-radius: 5px;
-}
-
-.confirm-button {
-  grid-column: 1 / -1;
-  justify-self: center;
-  margin-top: 1.5rem;
-  font-size: 1.2rem;
-  padding: 0.7rem 1.5rem;
-  background-color: #ea0303;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.confirm-button:hover {
-  background-color: rgb(2, 159, 2);
 }
 </style>
