@@ -8,6 +8,7 @@ import type { Ref } from 'vue'
 import type { Guess } from '@/models/guess'
 import type { MapConfig } from '@/models/mapConfig'
 import type { Image } from '@/models/image'
+import { SETTINGS } from '@/data/settings-data'
 
 // const mapTypeId = 'satellite'
 
@@ -20,11 +21,18 @@ const props = defineProps<{
 const imageValue = props.image
 const guessValue = props.guess
 const mapConfigValue = props.mapConfig
-console.log(mapConfigValue)
+
+const masterVolume = ref<number>(SETTINGS.masterVolume.value)
+const musicVolume = ref<number>((SETTINGS.musicVolume.value * masterVolume.value) / 100)
+const gameplayVolume = ref<number>((SETTINGS.gameplayVolume.value * masterVolume.value) / 100)
+const effectsVolume = ref<number>((SETTINGS.effectsVolume.value * masterVolume.value) / 100)
+const selectedLanguage = ref<string>(SETTINGS.selectedLanguage.value)
 
 const correctSound = new Audio(CorrectGuessSound)
+correctSound.volume = effectsVolume.value / 100
 correctSound.loop = false
 const wrongSound = new Audio(WrongGuessSound)
+wrongSound.volume = effectsVolume.value / 100
 wrongSound.loop = false
 
 function playSound(correct: boolean | undefined) {
@@ -78,8 +86,8 @@ const emit = defineEmits<{
           >{{ guessValue?.distance }}m</span
         >
         <span v-if="guessValue?.floorDiff != 0">
-           and 
-           <span class="guess-results-modal__incorrect">{{ guessValue?.floorDiff }} floor(s)</span>
+          and
+          <span class="guess-results-modal__incorrect">{{ guessValue?.floorDiff }} floor(s)</span>
         </span>
         away from the correct location.
       </h2>
@@ -111,7 +119,7 @@ const emit = defineEmits<{
   display: grid;
   grid-template-columns: 12rem 1fr 12rem;
   grid-template-rows: 4.5rem 1fr 4.5rem 1fr;
-  
+
   overflow-y: scroll;
 }
 
@@ -207,7 +215,7 @@ const emit = defineEmits<{
   .guess-results-modal__content--main {
     grid-row: 2;
     grid-column: 1/-1;
-    
+
     display: flex;
     gap: 10px;
     flex-direction: column;

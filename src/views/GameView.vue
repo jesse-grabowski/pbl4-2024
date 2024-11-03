@@ -10,9 +10,9 @@ import type { MapConfig } from '@/models/mapConfig'
 import { SETTINGS } from '@/data/settings-data'
 
 const masterVolume = ref<number>(SETTINGS.masterVolume.value)
-const musicVolume = ref<number>(SETTINGS.musicVolume.value)
-const gameplayVolume = ref<number>(SETTINGS.gameplayVolume.value)
-const effectsVolume = ref<number>(SETTINGS.effectsVolume.value)
+const musicVolume = ref<number>((SETTINGS.musicVolume.value * masterVolume.value) / 100)
+const gameplayVolume = ref<number>((SETTINGS.gameplayVolume.value * masterVolume.value) / 100)
+const effectsVolume = ref<number>((SETTINGS.effectsVolume.value * masterVolume.value) / 100)
 const selectedLanguage = ref<string>(SETTINGS.selectedLanguage.value)
 
 const images: Image[] = ImageData
