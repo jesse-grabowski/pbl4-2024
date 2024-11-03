@@ -7,6 +7,7 @@ const Campus = UserInfo.campus
 function saveUserInfo() {
   UserInfo.name = Name
   UserInfo.campus = Campus
+  console.log(Campus.value)
 }
 
 onUnmounted(() => {

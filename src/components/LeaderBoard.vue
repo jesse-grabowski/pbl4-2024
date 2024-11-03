@@ -12,8 +12,8 @@ async function fetchData() {
 
   topscores.value = data.result
     .map((record: GameRecord) => {
-      const [score, date, time, department, campus] = String(record.score).split(',')
-      return { user: record.user, score: Number(score), date: date, time: time, department: department, campus: campus }
+      const [date, time, score, campus] = String(record.score).split(',')
+      return { user: record.user, score: Number(score), date: date, time: time, campus: campus }
     })
     .sort((a: GameRecord, b: GameRecord) => b.score - a.score)
     .slice(0, 10)

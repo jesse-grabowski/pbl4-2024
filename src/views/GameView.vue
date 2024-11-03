@@ -133,6 +133,7 @@ function startTimer() {
 //#endregion Timer
 
 async function sendData() {
+  console.log('sending data')
   const date_var = new Date()
   const day = date_var.getDate()
   const month = date_var.getMonth()
@@ -145,7 +146,7 @@ async function sendData() {
   const seconds = totalTime.value % 60
   const time = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
 
-  const record = `${date}, ${time}, ${totalScore}, ${Campus};`
+  const record = `${date}, ${time}, ${totalScore}, ${Campus.value}`
   console.log('record: ', record)
   fetch(url, {
     method: 'POST',
@@ -221,7 +222,6 @@ function updateGuessMarkerPosition(event: google.maps.MapMouseEvent) {
   // 19 = 50m
 
   resultZoom = 15.95 / (1 - 0.2103 * Math.exp(-0.005292 * getHorizontalDistance()))
-  console.log(resultZoom, getHorizontalDistance())
 }
 
 const { open, close } = useModal({
@@ -259,8 +259,9 @@ async function doGuess() {
 async function startNextRound() {
   guessIndex.value++
   image.value = await getRandomImage()
+  console.log('image: ', image.value)
   if (isUndefined(image.value)) {
-    sendData()
+    await sendData()
     // show result here
     return
   }
