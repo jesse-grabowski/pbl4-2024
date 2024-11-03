@@ -1,27 +1,22 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { Settings } from '@/models/settings'
+import { SETTINGS } from '@/data/settings-data'
 
-const masterVolume = ref(45)
-const musicVolume = ref(45)
-const gameplayVolume = ref(45)
-const effectsVolume = ref(45)
-const selectedLanguage = ref('English')
+const masterVolume = ref<number>(SETTINGS.masterVolume.value)
+const musicVolume = ref<number>(SETTINGS.musicVolume.value)
+const gameplayVolume = ref<number>(SETTINGS.gameplayVolume.value)
+const effectsVolume = ref<number>(SETTINGS.effectsVolume.value)
+const selectedLanguage = ref<string>(SETTINGS.selectedLanguage.value)
 
-const settings = computed<Settings | undefined>(() => {
-  return {
-    masterVolume : parseInt(masterVolume.value.toString()),
-    musicVolume : parseInt(musicVolume.value.toString()),
-    gameplayVolume : parseInt(gameplayVolume.value.toString()),
-    effectsVolume : parseInt(effectsVolume.value.toString()),
-    selectedLanguage : selectedLanguage.value,
-  }
-})
+async function confirm() {
+  SETTINGS.masterVolume.value = masterVolume.value
+  SETTINGS.musicVolume.value = musicVolume.value
+  SETTINGS.gameplayVolume.value = gameplayVolume.value
+  SETTINGS.effectsVolume.value = effectsVolume.value
+  SETTINGS.selectedLanguage.value = selectedLanguage.value
 
-async function confirm(){
-  console.log(settings.value)
+  console.log(masterVolume.value, musicVolume.value, gameplayVolume.value, effectsVolume.value, selectedLanguage.value)
 }
-
 </script>
 
 <template>
