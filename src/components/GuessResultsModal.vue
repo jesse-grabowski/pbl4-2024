@@ -1,25 +1,27 @@
 <script setup lang="ts">
 import { VueFinalModal } from 'vue-final-modal'
-import { GoogleMap, Marker } from 'vue3-google-map'
+import { GoogleMap, Marker, Polyline } from 'vue3-google-map'
 import ConfettiExplosion from 'vue-confetti-explosion'
 import CorrectGuessSound from '@/assets/sounds/correct-guess.mp3'
 import WrongGuessSound from '@/assets/sounds/wrong-guess.mp3'
 import type { Ref } from 'vue'
 import type { Guess } from '@/models/guess'
+import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
-
-// const mapTypeId = 'satellite'
 
 const props = defineProps<{
   image?: Ref<Image | undefined>
   guess?: Ref<Guess | undefined>
+  guessMarkerOption?: Ref<google.maps.MarkerOptions | undefined>
+  actualMarkerOption?: Ref<google.maps.MarkerOptions | undefined>
   mapConfig?: Ref<MapConfig | undefined>
 }>()
 
 const imageValue = props.image
 const guessValue = props.guess
 const mapConfigValue = props.mapConfig
-console.log(mapConfigValue)
+const guessMarkerOption = props.guessMarkerOption
+const actualMarkerOption = props.actualMarkerOption
 
 const correctSound = new Audio(CorrectGuessSound)
 correctSound.loop = false
@@ -64,8 +66,17 @@ const emit = defineEmits<{
         :mapTypeId="mapConfigValue?.mapTypeId"
         :tilt="mapConfigValue?.tilt"
       >
-        <Marker id="marker_guess" :options="{ position: guessValue?.guess }" />
-        <Marker id="marker_actual" :options="{ position: imageValue?.coordinate }" />
+        <Marker v-if="guessMarkerOption" id="marker_guess" :options="guessMarkerOption" />
+        <Marker v-if="actualMarkerOption" id="marker_actual" :options="actualMarkerOption" />
+        <Polyline
+          v-if="guessValue && imageValue"
+          :options="{
+            path: [guessValue.guessedCoordinate, imageValue.coordinate],
+            strokeColor: '#03FF1D',
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+          }"
+        />
       </GoogleMap>
       <ConfettiExplosion v-if="guessValue?.correct" />
       <h2>
@@ -77,8 +88,8 @@ const emit = defineEmits<{
           >{{ guessValue?.distance }}m</span
         >
         <span v-if="guessValue?.floorDiff != 0">
-           and 
-           <span class="guess-results-modal__incorrect">{{ guessValue?.floorDiff }} floor(s)</span>
+          and
+          <span class="guess-results-modal__incorrect">{{ guessValue?.floorDiff }} floor(s)</span>
         </span>
         away from the correct location.
       </h2>
@@ -110,7 +121,7 @@ const emit = defineEmits<{
   display: grid;
   grid-template-columns: 12rem 1fr 12rem;
   grid-template-rows: 4.5rem 1fr 4.5rem 1fr;
-  
+
   overflow-y: scroll;
 }
 
@@ -206,7 +217,7 @@ const emit = defineEmits<{
   .guess-results-modal__content--main {
     grid-row: 2;
     grid-column: 1/-1;
-    
+
     display: flex;
     gap: 10px;
     flex-direction: column;

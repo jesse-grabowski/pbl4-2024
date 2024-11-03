@@ -14,9 +14,8 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@types/chance": "^1.1.6",
     "@types/google.maps": "^3.58.1",
-    "chance": "^1.1.12",
+    "es-toolkit": "^1.26.1",
     "lodash.debounce": "^4.0.8",
     "oh-vue-icons": "^1.0.0-rc3",
     "pannellum": "^2.5.6",

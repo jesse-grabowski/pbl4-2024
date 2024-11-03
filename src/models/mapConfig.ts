@@ -1,8 +1,6 @@
-import type { Coordinates } from '@/models/guess'
-
 export interface MapConfig {
   apikey: string
-  center: Coordinates
+  center: google.maps.LatLngLiteral
   zoomcontrol: boolean
   maptypecontrol: boolean
   streetviewcontrol: boolean
