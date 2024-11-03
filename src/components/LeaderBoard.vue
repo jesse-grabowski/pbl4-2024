@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { LeaderboardCredential } from '@/data/leaderboard-credential'
 import type { GameRecord } from '../models/record'
 
-const id = 'tpbH0M4HiGifjDCgz6Qc'
-const url = `https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/${id}/scores/`
+const url = LeaderboardCredential.url
 
 const topscores = ref<GameRecord[]>([])
 

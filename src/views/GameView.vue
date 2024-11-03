@@ -11,6 +11,12 @@ import actualMarkerImg from '@/assets/images/targetflag.png'
 import { CONFIG } from '@/data/gameview_config'
 import { getRandomImage } from '@/utils/image-support'
 import { isUndefined } from 'es-toolkit'
+import { UserInfo } from '@/data/user-info'
+import { LeaderboardCredential } from '@/data/leaderboard-credential'
+
+const url = LeaderboardCredential.url
+const Name = UserInfo.name
+const Campus = UserInfo.campus
 
 // we need to include the width and height as hints for the browser to reserve enough space
 const image = ref<Image | undefined>(undefined)
@@ -106,6 +112,7 @@ function toggleMapExpansionZoom() {
 
 let timerInterval = 1000
 const timerSeconds = ref(0)
+const totalTime = ref(0) // in seconds
 
 function startTimer() {
   if (timerInterval !== 1000) {
@@ -124,6 +131,31 @@ function startTimer() {
 }
 
 //#endregion Timer
+
+async function sendData() {
+  const date_var = new Date()
+  const day = date_var.getDate()
+  const month = date_var.getMonth()
+  const year = date_var.getFullYear()
+  const date = `${month}-${day}-${year}`
+
+  const totalScore = roundScores.reduce((acc, score) => acc + score, 0)
+
+  const minutes = Math.floor(totalTime.value / 60)
+  const seconds = totalTime.value % 60
+  const time = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+
+  const record = `${date}, ${time}, ${totalScore}, ${Campus};`
+  console.log('record: ', record)
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      user: Name.value,
+      score: record,
+    }),
+  })
+}
 
 function evaluate() {
   if (isUndefined(image.value)) {
@@ -146,6 +178,8 @@ function evaluate() {
   if (currentRoundScore > score_boundary && floorDiff == 0) {
     correctGuess = true
   } else correctGuess = false
+
+  totalTime.value += 30 - timerSeconds.value
 }
 
 function getHorizontalDistance() {
@@ -226,6 +260,7 @@ async function startNextRound() {
   guessIndex.value++
   image.value = await getRandomImage()
   if (isUndefined(image.value)) {
+    sendData()
     // show result here
     return
   }
