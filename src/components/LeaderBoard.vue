@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { type GameRecord } from '../models/record'
 
-const id = 'tpbH0M4HiGifjDCgz6Qc'
+const id = 'tpbH0M4HiGifjDCgz6Qd'
 const url = `https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/${id}/scores/`
 
 const topscores = ref<GameRecord[]>([])
@@ -13,7 +13,7 @@ async function fetchData() {
 
   topscores.value = data.result
     .map((record: GameRecord) => {
-      const [score, date, time, campus] = String(record.score).split(',')
+      const [date, time, score, campus] = String(record.score).split(',')
       return { user: record.user, score: Number(score), date: date, time: time, campus: campus }
     })
     .sort((a: GameRecord, b: GameRecord) => b.score - a.score)
