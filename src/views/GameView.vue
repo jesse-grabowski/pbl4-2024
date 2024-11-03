@@ -162,7 +162,9 @@ function evaluate() {
   if (isUndefined(image.value)) {
     throw new Error('Image is undefined')
   }
-  floorDiff = Math.abs(parseInt(selectedFloor.value[0]) - image.value.floor)
+  if (image.value) {
+    floorDiff = Math.abs(parseInt(selectedFloor.value[0]) - image.value.floor)
+  }
   horizontalDistance = getHorizontalDistance()
   if (horizontalDistance > distanceForZeroScore || timerSeconds.value === 0) {
     currentRoundScore = 0
@@ -265,7 +267,9 @@ async function startNextRound() {
     // show result here
     return
   }
-  actualPosition = image.value.coordinate
+  if (image.value) {
+    actualPosition = image.value.coordinate
+  }
   actualMarkerOption.value = {
     ...actualMarkerOption.value,
     position: actualPosition,
