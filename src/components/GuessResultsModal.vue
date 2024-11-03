@@ -8,7 +8,6 @@ import type { Ref } from 'vue'
 import type { Guess } from '@/models/guess'
 import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
-import type { Image } from '@/models/image'
 import { SETTINGS } from '@/data/settings-data'
 
 // const mapTypeId = 'satellite'
