@@ -7,7 +7,6 @@
 export {}
 declare global {
   const computed: typeof import('vue')['computed']
-  const defineProps: typeof import('vue')['defineProps']
   const onBeforeRouteLeave: typeof import('vue-router')['onBeforeRouteLeave']
   const onBeforeRouteUpdate: typeof import('vue-router')['onBeforeRouteUpdate']
   const onMounted: typeof import('vue')['onMounted']
@@ -15,10 +14,4 @@ declare global {
   const ref: typeof import('vue')['ref']
   const useRoute: typeof import('vue-router')['useRoute']
   const useRouter: typeof import('vue-router')['useRouter']
-}
-// for type re-export
-declare global {
-  // @ts-ignore
-  export type { Image } from '@/models/image'
-  import('@/models/image')
 }

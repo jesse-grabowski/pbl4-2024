@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { type GameRecord } from '../models/record'
+import { LeaderboardCredential } from '@/data/leaderboard-credential'
+import type { GameRecord } from '../models/record'
 
-const id = 'tpbH0M4HiGifjDCgz6Qd'
-const url = `https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/${id}/scores/`
+const url = LeaderboardCredential.url
 
 const topscores = ref<GameRecord[]>([])
 

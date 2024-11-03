@@ -44,12 +44,7 @@ export default defineConfig({
     AutoImport({
       imports: [
         {
-          vue: ['ref', 'onMounted', 'computed'],
-        },
-        {
-          from: '@/models/image',
-          imports: ['Image'],
-          type: true,
+          vue: ['ref', 'onMounted', 'onUnmounted', 'computed'],
         },
         VueRouterAutoImports,
       ],
@@ -60,8 +55,5 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
-  },
-  optimizeDeps: {
-    include: ['lodash.debounce'],
   },
 })

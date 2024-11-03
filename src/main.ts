@@ -8,11 +8,11 @@ import App from './App.vue'
 import router from './router'
 
 import { OhVueIcon, addIcons } from 'oh-vue-icons'
-import { FaExpandArrowsAlt, FaCompressArrowsAlt, FaHamburger } from 'oh-vue-icons/icons'
+import { FaExpandArrowsAlt, FaCompressArrowsAlt, GiHamburgerMenu } from 'oh-vue-icons/icons'
 
 import 'vue-final-modal/style.css'
 
-addIcons(FaExpandArrowsAlt, FaCompressArrowsAlt, FaHamburger)
+addIcons(FaExpandArrowsAlt, FaCompressArrowsAlt, GiHamburgerMenu)
 
 const app = createApp(App)
 app.component('v-icon', OhVueIcon)
