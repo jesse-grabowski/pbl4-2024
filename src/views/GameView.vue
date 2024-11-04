@@ -142,11 +142,12 @@ function startTimer() {
 
 async function sendData() {
   console.log('sending data')
-  const date_var = new Date()
-  const day = date_var.getDate()
-  const month = date_var.getMonth()
-  const year = date_var.getFullYear()
-  const date = `${month}/${day}/${year}`
+  const date = new Date().toLocaleDateString('en-US', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
 
   const totalScore = roundScores.reduce((acc, score) => acc + score, 0)
 
