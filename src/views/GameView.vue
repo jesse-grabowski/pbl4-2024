@@ -7,6 +7,7 @@ import type { Guess } from '@/models/guess'
 import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
 import { SETTINGS } from '@/data/settings-data'
+import { sum } from 'es-toolkit'
 
 const masterVolume = ref<number>(SETTINGS.masterVolume.value)
 const musicVolume = ref<number>((SETTINGS.musicVolume.value * masterVolume.value) / 100)
@@ -119,7 +120,7 @@ function toggleMapExpansionZoom() {
 
 let timerInterval = 1000
 const timerSeconds = ref(0)
-const totalTime = ref(0) // in seconds
+let totalTime = sum(roundScores) // in seconds
 
 function startTimer() {
   if (timerInterval !== 1000) {
@@ -149,8 +150,8 @@ async function sendData() {
 
   const totalScore = roundScores.reduce((acc, score) => acc + score, 0)
 
-  const minutes = Math.floor(totalTime.value / 60)
-  const seconds = totalTime.value % 60
+  const minutes = Math.floor(totalTime / 60)
+  const seconds = totalTime % 60
   const time = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
 
   const record = `${date}, ${time}, ${totalScore}, ${Campus.value}`
@@ -189,7 +190,7 @@ function evaluate() {
     correctGuess = true
   } else correctGuess = false
 
-  totalTime.value += 30 - timerSeconds.value
+  totalTime += 30 - timerSeconds.value
 }
 
 function getHorizontalDistance() {
