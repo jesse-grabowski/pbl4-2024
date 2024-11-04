@@ -23,12 +23,14 @@ const props = defineProps<{
 const imageValue = props.image
 const guessValue = props.guess
 const mapConfigValue = props.mapConfig
+const guessMarkerOption = props.guessMarkerOption
+const actualMarkerOption = props.actualMarkerOption
 
 const masterVolume = ref<number>(SETTINGS.masterVolume.value)
-const musicVolume = ref<number>((SETTINGS.musicVolume.value * masterVolume.value) / 100)
-const gameplayVolume = ref<number>((SETTINGS.gameplayVolume.value * masterVolume.value) / 100)
+// const musicVolume = ref<number>((SETTINGS.musicVolume.value * masterVolume.value) / 100)
+// const gameplayVolume = ref<number>((SETTINGS.gameplayVolume.value * masterVolume.value) / 100)
 const effectsVolume = ref<number>((SETTINGS.effectsVolume.value * masterVolume.value) / 100)
-const selectedLanguage = ref<string>(SETTINGS.selectedLanguage.value)
+// const selectedLanguage = ref<string>(SETTINGS.selectedLanguage.value)
 
 const correctSound = new Audio(CorrectGuessSound)
 correctSound.volume = effectsVolume.value / 100
