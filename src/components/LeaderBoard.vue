@@ -8,7 +8,6 @@ const url = LeaderboardCredential.url
 const topscores = ref<GameRecord[]>([])
 
 const cutoffDate = ref(new Date(new Date().setFullYear(new Date().getFullYear() - 1))) // setting default date to 1 year ago
-console.log(cutoffDate.value)
 
 async function fetchData() {
   const response = await fetch(url)
