@@ -12,7 +12,7 @@ export async function getRandomImage(): Promise<Image | undefined> {
   }
   let randomIndex
   do {
-    randomIndex = randomInt(0, images.length - 1)
+    randomIndex = randomInt(0, images.length)
   } while (guessedImageSet.has(randomIndex))
   const image = images[randomIndex]
   guessedImageSet.add(randomIndex)

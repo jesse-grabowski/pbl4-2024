@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { LeaderboardCredential } from '@/data/leaderboard-credential'
 import type { GameRecord } from '../models/record'
 
-const id = 'tpbH0M4HiGifjDCgz6Qc'
-const url = `https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/${id}/scores/`
+const url = LeaderboardCredential.url
 
 const topscores = ref<GameRecord[]>([])
 
@@ -12,8 +12,8 @@ async function fetchData() {
 
   topscores.value = data.result
     .map((record: GameRecord) => {
-      const [score, date, time, department, campus] = String(record.score).split(',')
-      return { user: record.user, score: Number(score), date: date, time: time, department: department, campus: campus }
+      const [date, time, score, campus] = String(record.score).split(',')
+      return { user: record.user, score: Number(score), date: date, time: time, campus: campus }
     })
     .sort((a: GameRecord, b: GameRecord) => b.score - a.score)
     .slice(0, 10)

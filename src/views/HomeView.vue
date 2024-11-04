@@ -1,4 +1,19 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { UserInfo } from '@/data/user-info'
+
+const Name = UserInfo.name
+const Campus = UserInfo.campus
+
+function saveUserInfo() {
+  UserInfo.name = Name
+  UserInfo.campus = Campus
+  console.log(Campus.value)
+}
+
+onUnmounted(() => {
+  saveUserInfo()
+})
+</script>
 
 <template>
   <div class="home">
@@ -7,11 +22,11 @@
         <RouterLink to="/game" class="start">Start Game!</RouterLink>
         <label>
           <span class="label">Campus</span>
-          <select class="campus">
+          <select class="campus" v-model="Campus">
             <option value="OIC">Ritsumeikan OIC</option>
           </select>
         </label>
-        <input class="name" type="text" placeholder="Enter Name Here" />
+        <input class="name" type="text" v-model="Name" placeholder="Enter Name Here" />
       </div>
     </div>
   </div>
