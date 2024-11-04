@@ -145,7 +145,7 @@ async function sendData() {
   const day = date_var.getDate()
   const month = date_var.getMonth()
   const year = date_var.getFullYear()
-  const date = `${month}-${day}-${year}`
+  const date = `${month}/${day}/${year}`
 
   const totalScore = roundScores.reduce((acc, score) => acc + score, 0)
 
