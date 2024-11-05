@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { LeaderboardCredential } from '@/data/leaderboard-credential'
 import type { GameRecord } from '../models/record'
-import { log } from 'echarts/types/src/util/log.js'
+// import { log } from 'echarts/types/src/util/log.js'
 
 const url = LeaderboardCredential.url
 
