@@ -7,7 +7,6 @@ import type { Guess } from '@/models/guess'
 import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
 import { SETTINGS } from '@/data/settings-data'
-import { sum } from 'es-toolkit'
 
 const masterVolume = ref<number>(SETTINGS.masterVolume.value)
 const musicVolume = ref<number>((SETTINGS.musicVolume.value * masterVolume.value) / 100)
@@ -18,7 +17,7 @@ import guessMarkerImg from '@/assets/images/guessflag.png'
 import actualMarkerImg from '@/assets/images/targetflag.png'
 import { CONFIG } from '@/data/gameview_config'
 import { getRandomImage, resetGuessedImageSet } from '@/utils/image-support'
-import { isUndefined } from 'es-toolkit'
+import { isUndefined, sum } from 'es-toolkit'
 import { UserInfo } from '@/data/user-info'
 import { LeaderboardCredential } from '@/data/leaderboard-credential'
 
@@ -48,6 +47,7 @@ const mapExpanded = CONFIG.mapExpanded
 const guessIndex = ref(0)
 let currentRoundScore = 0
 const roundScores = new Array<number>(10)
+const totalScore = computed(() => roundScores.reduce((acc, score) => acc + score, 0))
 const maxScore = 2000
 const distanceForZeroScore = 40
 
@@ -149,13 +149,11 @@ async function sendData() {
     day: '2-digit',
   })
 
-  const totalScore = roundScores.reduce((acc, score) => acc + score, 0)
-
   const minutes = Math.floor(totalTime / 60)
   const seconds = totalTime % 60
   const time = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
 
-  const record = `${date}, ${time}, ${totalScore}, ${Campus.value}`
+  const record = `${date}, ${time}, ${totalScore.value}, ${Campus.value}`
   console.log('record: ', record)
   fetch(url, {
     method: 'POST',
@@ -283,10 +281,12 @@ async function startNextRound() {
     ...actualMarkerOption.value,
     position: actualPosition,
   }
+
+  console.log('total score: ', totalScore.value)
+  console.log('round scores: ', roundScores)
 }
 
 onMounted(async () => {
-  console.log('total score: ')
   const { Size } = (await google.maps.importLibrary('core')) as google.maps.CoreLibrary
   guessMarkerOption.value.icon = {
     url: guessMarkerImg,
@@ -302,6 +302,7 @@ onMounted(async () => {
 onUnmounted(() => {
   clearInterval(timerInterval)
   resetGuessedImageSet()
+  roundScores.fill(0)
 })
 </script>
 
