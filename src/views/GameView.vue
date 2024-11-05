@@ -17,7 +17,7 @@ const selectedLanguage = ref<string>(SETTINGS.selectedLanguage.value)
 import guessMarkerImg from '@/assets/images/guessflag.png'
 import actualMarkerImg from '@/assets/images/targetflag.png'
 import { CONFIG } from '@/data/gameview_config'
-import { getRandomImage } from '@/utils/image-support'
+import { getRandomImage, resetGuessedImageSet } from '@/utils/image-support'
 import { isUndefined } from 'es-toolkit'
 import { UserInfo } from '@/data/user-info'
 import { LeaderboardCredential } from '@/data/leaderboard-credential'
@@ -120,7 +120,7 @@ function toggleMapExpansionZoom() {
 
 let timerInterval = 1000
 const timerSeconds = ref(0)
-let totalTime = sum(roundScores) // in seconds
+let totalTime = 0 // in seconds
 
 function startTimer() {
   if (timerInterval !== 1000) {
@@ -286,6 +286,7 @@ async function startNextRound() {
 }
 
 onMounted(async () => {
+  console.log('total score: ')
   const { Size } = (await google.maps.importLibrary('core')) as google.maps.CoreLibrary
   guessMarkerOption.value.icon = {
     url: guessMarkerImg,
@@ -300,6 +301,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   clearInterval(timerInterval)
+  resetGuessedImageSet()
 })
 </script>
 

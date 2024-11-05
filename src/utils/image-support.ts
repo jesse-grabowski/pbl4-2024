@@ -18,3 +18,7 @@ export async function getRandomImage(): Promise<Image | undefined> {
   guessedImageSet.add(randomIndex)
   return image
 }
+
+export function resetGuessedImageSet() {
+  guessedImageSet.clear()
+}
