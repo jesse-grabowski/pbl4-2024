@@ -15,12 +15,6 @@ import { isUndefined, sum } from 'es-toolkit'
 import { UserInfo } from '@/data/user-info'
 import { LeaderboardCredential } from '@/data/leaderboard-credential'
 
-const masterVolume = ref<number>(SETTINGS.masterVolume.value)
-const musicVolume = ref<number>((SETTINGS.musicVolume.value * masterVolume.value) / 100)
-const gameplayVolume = ref<number>((SETTINGS.gameplayVolume.value * masterVolume.value) / 100)
-const effectsVolume = ref<number>((SETTINGS.effectsVolume.value * masterVolume.value) / 100)
-const selectedLanguage = ref<string>(SETTINGS.selectedLanguage.value)
-
 const url = LeaderboardCredential.url
 const Name = UserInfo.name
 const Campus = UserInfo.campus
