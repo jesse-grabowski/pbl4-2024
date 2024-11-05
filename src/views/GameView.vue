@@ -17,7 +17,7 @@ import guessMarkerImg from '@/assets/images/guessflag.png'
 import actualMarkerImg from '@/assets/images/targetflag.png'
 import { CONFIG } from '@/data/gameview_config'
 import { getRandomImage, resetGuessedImageSet } from '@/utils/image-support'
-import { isUndefined, sum } from 'es-toolkit'
+import { isUndefined } from 'es-toolkit'
 import { UserInfo } from '@/data/user-info'
 import { LeaderboardCredential } from '@/data/leaderboard-credential'
 
