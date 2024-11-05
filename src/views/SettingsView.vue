@@ -1,21 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { SETTINGS } from '@/data/settings-data'
 
-const masterVolume = ref<number>(SETTINGS.masterVolume.value)
-const musicVolume = ref<number>(SETTINGS.musicVolume.value)
-const gameplayVolume = ref<number>(SETTINGS.gameplayVolume.value)
-const effectsVolume = ref<number>(SETTINGS.effectsVolume.value)
-const selectedLanguage = ref<string>(SETTINGS.selectedLanguage.value)
-
 async function confirm() {
-  SETTINGS.masterVolume.value = masterVolume.value
-  SETTINGS.musicVolume.value = musicVolume.value
-  SETTINGS.gameplayVolume.value = gameplayVolume.value
-  SETTINGS.effectsVolume.value = effectsVolume.value
-  SETTINGS.selectedLanguage.value = selectedLanguage.value
-
-  console.log(masterVolume.value, musicVolume.value, gameplayVolume.value, effectsVolume.value, selectedLanguage.value)
+  console.log(
+    `MasterVolume: ${SETTINGS.value.masterVolume}`,
+    `MusicVolume: ${SETTINGS.value.musicVolume}`,
+    `GameplayVolume: ${SETTINGS.value.gameplayVolume}`,
+    `EffectsVolume: ${SETTINGS.value.effectsVolume}`,
+    `SelectedLanguage: ${SETTINGS.value.selectedLanguage}`,
+  )
+  alert('Changes saved!')
 }
 </script>
 
@@ -23,23 +17,23 @@ async function confirm() {
   <div class="settings-page">
     <div class="sliders-container">
       <label for="master-volume" class="slider-label">Master Volume</label>
-      <input type="range" id="master-volume" min="0" max="100" v-model="masterVolume" />
-      <span class="slider-value">{{ masterVolume }}</span>
+      <input type="range" id="master-volume" min="0" max="100" v-model="SETTINGS.masterVolume" />
+      <span class="slider-value">{{ SETTINGS.masterVolume }}</span>
 
       <label for="music" class="slider-label">Music</label>
-      <input type="range" id="music" min="0" max="100" v-model="musicVolume" />
-      <span class="slider-value">{{ musicVolume }}</span>
+      <input type="range" id="music" min="0" max="100" v-model="SETTINGS.musicVolume" />
+      <span class="slider-value">{{ SETTINGS.musicVolume }}</span>
 
       <label for="gameplay" class="slider-label">Gameplay</label>
-      <input type="range" id="gameplay" min="0" max="100" v-model="gameplayVolume" />
-      <span class="slider-value">{{ gameplayVolume }}</span>
+      <input type="range" id="gameplay" min="0" max="100" v-model="SETTINGS.gameplayVolume" />
+      <span class="slider-value">{{ SETTINGS.gameplayVolume }}</span>
 
       <label for="background-effects" class="slider-label">Background Effects</label>
-      <input type="range" id="background-effects" min="0" max="100" v-model="effectsVolume" />
-      <span class="slider-value">{{ effectsVolume }}</span>
+      <input type="range" id="background-effects" min="0" max="100" v-model="SETTINGS.effectsVolume" />
+      <span class="slider-value">{{ SETTINGS.effectsVolume }}</span>
 
       <label for="language" class="slider-label">Language</label>
-      <select v-model="selectedLanguage" class="language-select">
+      <select v-model="SETTINGS.selectedLanguage" class="language-select">
         <option value="English">English</option>
         <option value="Japanese">Japanese</option>
       </select>
