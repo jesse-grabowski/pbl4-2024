@@ -7,19 +7,19 @@ import type { Guess } from '@/models/guess'
 import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
 import { SETTINGS } from '@/data/settings-data'
+import guessMarkerImg from '@/assets/images/guessflag.png'
+import actualMarkerImg from '@/assets/images/targetflag.png'
+import { CONFIG } from '@/data/gameview_config'
+import { getRandomImage, resetGuessedImageSet } from '@/utils/image-support'
+import { isUndefined, sum } from 'es-toolkit'
+import { UserInfo } from '@/data/user-info'
+import { LeaderboardCredential } from '@/data/leaderboard-credential'
 
 const masterVolume = ref<number>(SETTINGS.masterVolume.value)
 const musicVolume = ref<number>((SETTINGS.musicVolume.value * masterVolume.value) / 100)
 const gameplayVolume = ref<number>((SETTINGS.gameplayVolume.value * masterVolume.value) / 100)
 const effectsVolume = ref<number>((SETTINGS.effectsVolume.value * masterVolume.value) / 100)
 const selectedLanguage = ref<string>(SETTINGS.selectedLanguage.value)
-import guessMarkerImg from '@/assets/images/guessflag.png'
-import actualMarkerImg from '@/assets/images/targetflag.png'
-import { CONFIG } from '@/data/gameview_config'
-import { getRandomImage, resetGuessedImageSet } from '@/utils/image-support'
-import { isUndefined } from 'es-toolkit'
-import { UserInfo } from '@/data/user-info'
-import { LeaderboardCredential } from '@/data/leaderboard-credential'
 
 const url = LeaderboardCredential.url
 const Name = UserInfo.name
@@ -46,8 +46,7 @@ const mapExpanded = CONFIG.mapExpanded
 
 const guessIndex = ref(0)
 let currentRoundScore = 0
-const roundScores = new Array<number>(10).fill(0)
-const totalScore = computed(() => roundScores.reduce((acc, score) => acc + score, 0))
+const roundScores = new Array<number>(10)
 const maxScore = 2000
 const distanceForZeroScore = 40
 
@@ -152,8 +151,8 @@ async function sendData() {
   const minutes = Math.floor(totalTime / 60)
   const seconds = totalTime % 60
   const time = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
-
-  const record = `${date}, ${time}, ${totalScore.value}, ${Campus.value}`
+  const totalScore = sum(roundScores)
+  const record = `${date}, ${time}, ${totalScore}, ${Campus.value}`
   console.log('record: ', record)
   fetch(url, {
     method: 'POST',
@@ -298,8 +297,8 @@ onMounted(async () => {
 
 onUnmounted(() => {
   clearInterval(timerInterval)
+  guessIndex.value = 0
   resetGuessedImageSet()
-  roundScores.fill(0)
 })
 </script>
 
