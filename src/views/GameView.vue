@@ -49,6 +49,7 @@ let center = { lat: 0, lng: 0 }
 let horizontalDistance = 0
 let floorDiff = 0
 let correctGuess = false
+let correctGuesses = 0
 
 const guessMarkerOption = ref<google.maps.MarkerOptions>({
   position: markerPosition,
@@ -178,6 +179,7 @@ function evaluate() {
 
   if (currentRoundScore > score_boundary && floorDiff == 0) {
     correctGuess = true
+    correctGuesses += 1
   } else correctGuess = false
 
   totalTime += 30 - timerSeconds.value
@@ -262,6 +264,8 @@ async function startNextRound() {
   console.log('image: ', image.value)
   if (isUndefined(image.value)) {
     await sendData()
+    UserInfo.value.corrects = correctGuesses
+    UserInfo.value.scores = roundScores
     // show result here
     return
   }
