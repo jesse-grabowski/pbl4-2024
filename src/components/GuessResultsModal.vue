@@ -24,11 +24,12 @@ const mapConfigValue = props.mapConfig
 const guessMarkerOption = props.guessMarkerOption
 const actualMarkerOption = props.actualMarkerOption
 
+const volume = (SETTINGS.value.effectsVolume / 100) * (SETTINGS.value.masterVolume / 100)
 const correctSound = new Audio(CorrectGuessSound)
-correctSound.volume = SETTINGS.value.effectsVolume / 100
+correctSound.volume = volume
 correctSound.loop = false
 const wrongSound = new Audio(WrongGuessSound)
-wrongSound.volume = SETTINGS.value.effectsVolume / 100
+wrongSound.volume = volume
 wrongSound.loop = false
 
 function playSound(correct: boolean | undefined) {

@@ -6,7 +6,7 @@ import GuessResultsModal from '@/components/GuessResultsModal.vue'
 import type { Guess } from '@/models/guess'
 import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
-import { SETTINGS } from '@/data/settings-data'
+// import { SETTINGS } from '@/data/settings-data'
 import guessMarkerImg from '@/assets/images/guessflag.png'
 import actualMarkerImg from '@/assets/images/targetflag.png'
 import { CONFIG } from '@/data/gameview_config'
@@ -245,7 +245,11 @@ const { open, close } = useModal({
         visible: false,
       }
       selectedFloor.value = '1F'
-      startNextRound()
+      if (guessIndex.value >= 2) {
+        // routing
+      } else {
+        startNextRound()
+      }
     },
   },
 })
