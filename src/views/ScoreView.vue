@@ -14,7 +14,7 @@ function playAgain() {
 <template>
   <div class="game-summary">
     <div class="congratulations-message">
-      Congratulations, <span class="player-name">player_name</span>! You guessed
+      Congratulations, <span class="player-name">{{ UserInfo.name }}</span> ! You guessed
       <span class="correct-guesses">{{ correctGuesses }}</span> out of 10 and accumulated
       <span class="total-points">{{ finalScore }}</span> points!
     </div>
