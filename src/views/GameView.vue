@@ -46,7 +46,7 @@ const mapExpanded = CONFIG.mapExpanded
 
 const guessIndex = ref(0)
 let currentRoundScore = 0
-const roundScores = new Array<number>(10)
+const roundScores = new Array<number>(10).fill(0)
 const totalScore = computed(() => roundScores.reduce((acc, score) => acc + score, 0))
 const maxScore = 2000
 const distanceForZeroScore = 40
