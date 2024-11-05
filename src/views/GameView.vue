@@ -281,9 +281,6 @@ async function startNextRound() {
     ...actualMarkerOption.value,
     position: actualPosition,
   }
-
-  console.log('total score: ', totalScore.value)
-  console.log('round scores: ', roundScores)
 }
 
 onMounted(async () => {
