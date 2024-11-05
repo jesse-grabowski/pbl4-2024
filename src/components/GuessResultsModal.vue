@@ -10,8 +10,6 @@ import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
 import { SETTINGS } from '@/data/settings-data'
 
-// const mapTypeId = 'satellite'
-
 const props = defineProps<{
   image?: Ref<Image | undefined>
   guess?: Ref<Guess | undefined>
@@ -26,17 +24,11 @@ const mapConfigValue = props.mapConfig
 const guessMarkerOption = props.guessMarkerOption
 const actualMarkerOption = props.actualMarkerOption
 
-const masterVolume = ref<number>(SETTINGS.masterVolume.value)
-// const musicVolume = ref<number>((SETTINGS.musicVolume.value * masterVolume.value) / 100)
-// const gameplayVolume = ref<number>((SETTINGS.gameplayVolume.value * masterVolume.value) / 100)
-const effectsVolume = ref<number>((SETTINGS.effectsVolume.value * masterVolume.value) / 100)
-// const selectedLanguage = ref<string>(SETTINGS.selectedLanguage.value)
-
 const correctSound = new Audio(CorrectGuessSound)
-correctSound.volume = effectsVolume.value / 100
+correctSound.volume = SETTINGS.value.effectsVolume / 100
 correctSound.loop = false
 const wrongSound = new Audio(WrongGuessSound)
-wrongSound.volume = effectsVolume.value / 100
+wrongSound.volume = SETTINGS.value.effectsVolume / 100
 wrongSound.loop = false
 
 function playSound(correct: boolean | undefined) {
