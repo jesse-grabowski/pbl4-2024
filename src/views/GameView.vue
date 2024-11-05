@@ -16,8 +16,6 @@ import { UserInfo } from '@/data/user-info'
 import { LeaderboardCredential } from '@/data/leaderboard-credential'
 
 const url = LeaderboardCredential.url
-const Name = UserInfo.name
-const Campus = UserInfo.campus
 
 // we need to include the width and height as hints for the browser to reserve enough space
 const image = ref<Image | undefined>(undefined)
@@ -146,13 +144,13 @@ async function sendData() {
   const seconds = totalTime % 60
   const time = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
   const totalScore = sum(roundScores)
-  const record = `${date}, ${time}, ${totalScore}, ${Campus.value}`
+  const record = `${date}, ${time}, ${totalScore}, ${UserInfo.value.campus}`
   console.log('record: ', record)
   fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      user: Name.value,
+      user: UserInfo.value.name,
       score: record,
     }),
   })
