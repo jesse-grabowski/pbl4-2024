@@ -1,13 +1,9 @@
 <script setup lang="ts">
 import { LeaderboardCredential } from '@/data/leaderboard-credential'
 import type { GameRecord } from '../models/record'
-// import { log } from 'echarts/types/src/util/log.js'
 
 const url = LeaderboardCredential.url
-
-const topscores = ref<GameRecord[]>([])
-
-const cutoffDate = ref(new Date(new Date().setFullYear(new Date().getFullYear() - 1))) // setting default date to 1 year ago
+const topscores = ref<GameRecord[]>()
 
 async function fetchData() {
   const response = await fetch(url)
@@ -20,8 +16,10 @@ async function fetchData() {
     })
     .filter((record: GameRecord) => {
       const recordDate = new Date(record.date)
-      cutoffDate.value.setDate(cutoffDate.value.getDate() - 1) // One day before since we want to include the cutoff date
-      return recordDate >= cutoffDate.value
+      const cutoffDate = new Date()
+      cutoffDate.setFullYear(cutoffDate.getFullYear() - 1)
+
+      return recordDate >= cutoffDate
     })
     .sort((a: GameRecord, b: GameRecord) => b.score - a.score)
     .slice(0, 10)
