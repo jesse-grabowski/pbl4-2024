@@ -10,9 +10,9 @@ async function fetchData() {
   const data = await response.json()
 
   topscores.value = data.result
-    .map((record: GameRecord) => {
-      const [date, time, score, campus] = String(record.score).split(',')
-      return { user: record.user, score: Number(score), date: date, time: time, campus: campus }
+    .map((result: { user: string; score: string }) => {
+      const [date, time, score, campus] = result.score.split(',')
+      return { user: result.user, score: Number(score), date: date, time: time, campus: campus }
     })
     .filter((record: GameRecord) => {
       const recordDate = new Date(record.date)
