@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { UserInfo } from '@/data/user-info'
 import { sum } from 'es-toolkit'
+import router from '@/router'
 
 const roundScores: number[] = UserInfo.value.scores as number[]
 const finalScore = sum(roundScores)
 const correctGuesses = UserInfo.value.corrects
+function playAgain() {
+  router.push('/game')
+}
 </script>
 
 <template>
@@ -27,7 +31,7 @@ const correctGuesses = UserInfo.value.corrects
       </div>
     </div>
 
-    <button class="play-again-button">PLAY AGAIN!</button>
+    <button @click="playAgain" class="play-again-button">PLAY AGAIN!</button>
   </div>
 </template>
 
