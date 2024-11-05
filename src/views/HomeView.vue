@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { UserInfo } from '@/data/user-info'
+import router from '@/router'
+
+onUnmounted(() => {
+  if (!UserInfo.value.name) router.replace('/')
+})
 </script>
 
 <template>
