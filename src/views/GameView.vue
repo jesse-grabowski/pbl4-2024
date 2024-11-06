@@ -407,6 +407,7 @@ onUnmounted(() => {
 .floor {
   grid-row: 5;
   grid-column: 7;
+  text-align: center;
 }
 
 .map-holder {
