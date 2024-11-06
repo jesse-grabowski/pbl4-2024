@@ -10,13 +10,13 @@
       <div class="about-us-content">
         <h2>Who Are We</h2>
         <p>
-          We are a group of students from Ritsumeikan University, working together
-          on a project focused on a gamified activity that is taking place in the
-          Osaka Ibaraki Campus of Ritsumeikan. We aim to apply what we have learned
-          previously to create this project, and we are excited to share it with
-          you!
+          Our company is dedicated to offering meaningful services that meet a variety of needs, 
+          with a special focus on supporting students. We aim to provide practical and accessible 
+          resources to empower our users and enhance their everyday experiences. We’re committed 
+          to creating an inclusive environment that promotes growth and opportunity for all. 
+          We invite you to learn more about what we do and look forward to welcoming you from the following link.
         </p>
-        <button class="btn">Contact Us</button>
+        <button class="btn">See More Details</button>
       </div>
     </div>
   </template>
