@@ -6,7 +6,6 @@ import GuessResultsModal from '@/components/GuessResultsModal.vue'
 import type { Guess } from '@/models/guess'
 import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
-// import { SETTINGS } from '@/data/settings-data'
 import guessMarkerImg from '@/assets/images/guessflag.png'
 import actualMarkerImg from '@/assets/images/targetflag.png'
 import { CONFIG } from '@/data/gameview_config'
@@ -41,7 +40,7 @@ const mapExpanded = CONFIG.mapExpanded
 
 const guessIndex = ref(0)
 let currentRoundScore = 0
-const roundScores = new Array<number>(10)
+const roundScores = new Array<number>(10).fill(0)
 const maxScore = 2000
 const distanceForZeroScore = 40
 
