@@ -8,6 +8,7 @@ import type { Ref } from 'vue'
 import type { Guess } from '@/models/guess'
 import type { Image } from '@/models/image'
 import type { MapConfig } from '@/models/mapConfig'
+import { SETTINGS } from '@/data/settings-data'
 
 const props = defineProps<{
   image?: Ref<Image | undefined>
@@ -23,9 +24,12 @@ const mapConfigValue = props.mapConfig
 const guessMarkerOption = props.guessMarkerOption
 const actualMarkerOption = props.actualMarkerOption
 
+const volume = (SETTINGS.value.effectsVolume / 100) * (SETTINGS.value.masterVolume / 100)
 const correctSound = new Audio(CorrectGuessSound)
+correctSound.volume = volume
 correctSound.loop = false
 const wrongSound = new Audio(WrongGuessSound)
+wrongSound.volume = volume
 wrongSound.loop = false
 
 function playSound(correct: boolean | undefined) {
@@ -95,7 +99,11 @@ const emit = defineEmits<{
       </h2>
       <p>{{ imageValue?.description }}</p>
     </main>
-    <button class="guess-results-modal__next" @click="emit('confirm')">NEXT ROUND</button>
+    <button
+      class="guess-results-modal__next"
+      @click="emit('confirm')"
+      v-text="guessValue?.guessIndex === 10 ? 'SEE RESULTS' : 'NEXT ROUND'"
+    ></button>
   </VueFinalModal>
 </template>
 

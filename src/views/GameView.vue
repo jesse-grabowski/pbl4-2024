@@ -9,14 +9,15 @@ import type { MapConfig } from '@/models/mapConfig'
 import guessMarkerImg from '@/assets/images/guessflag.png'
 import actualMarkerImg from '@/assets/images/targetflag.png'
 import { CONFIG } from '@/data/gameview_config'
-import { getRandomImage } from '@/utils/image-support'
-import { isUndefined } from 'es-toolkit'
+import { getRandomImage, resetGuessedImageSet } from '@/utils/image-support'
+import { isUndefined, sum } from 'es-toolkit'
 import { UserInfo } from '@/data/user-info'
 import { LeaderboardCredential } from '@/data/leaderboard-credential'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const url = LeaderboardCredential.url
-const Name = UserInfo.name
-const Campus = UserInfo.campus
 
 // we need to include the width and height as hints for the browser to reserve enough space
 const image = ref<Image | undefined>(undefined)
@@ -39,7 +40,7 @@ const mapExpanded = CONFIG.mapExpanded
 
 const guessIndex = ref(0)
 let currentRoundScore = 0
-const roundScores = new Array<number>(10)
+const roundScores = new Array<number>(10).fill(0)
 const maxScore = 2000
 const distanceForZeroScore = 40
 
@@ -50,6 +51,7 @@ let center = { lat: 0, lng: 0 }
 let horizontalDistance = 0
 let floorDiff = 0
 let correctGuess = false
+let correctGuesses = 0
 
 const guessMarkerOption = ref<google.maps.MarkerOptions>({
   position: markerPosition,
@@ -72,6 +74,7 @@ const guess = computed<Guess | undefined>(() => {
     distance: horizontalDistance,
     time: timerText.value,
     stage: stageText.value,
+    guessIndex: guessIndex.value,
     guessedCoordinate: markerPosition,
     floorDiff: floorDiff,
   }
@@ -112,7 +115,7 @@ function toggleMapExpansionZoom() {
 
 let timerInterval = 1000
 const timerSeconds = ref(0)
-const totalTime = ref(0) // in seconds
+let totalTime = 0 // in seconds
 
 function startTimer() {
   if (timerInterval !== 1000) {
@@ -134,25 +137,24 @@ function startTimer() {
 
 async function sendData() {
   console.log('sending data')
-  const date_var = new Date()
-  const day = date_var.getDate()
-  const month = date_var.getMonth()
-  const year = date_var.getFullYear()
-  const date = `${month}-${day}-${year}`
+  const date = new Date().toLocaleDateString('en-US', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
 
-  const totalScore = roundScores.reduce((acc, score) => acc + score, 0)
-
-  const minutes = Math.floor(totalTime.value / 60)
-  const seconds = totalTime.value % 60
+  const minutes = Math.floor(totalTime / 60)
+  const seconds = totalTime % 60
   const time = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
-
-  const record = `${date}, ${time}, ${totalScore}, ${Campus.value}`
+  const totalScore = sum(roundScores)
+  const record = `${date}, ${time}, ${totalScore}, ${UserInfo.value.campus}`
   console.log('record: ', record)
   fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      user: Name.value,
+      user: UserInfo.value.name,
       score: record,
     }),
   })
@@ -175,14 +177,15 @@ function evaluate() {
   if (currentRoundScore > maxScore) {
     currentRoundScore = maxScore
   }
-  roundScores[guessIndex.value - 1] = currentRoundScore
+  roundScores[guessIndex.value - 1] = Math.floor(currentRoundScore)
   console.log('current round score: ', currentRoundScore)
 
   if (currentRoundScore > score_boundary && floorDiff == 0) {
     correctGuess = true
+    correctGuesses += 1
   } else correctGuess = false
 
-  totalTime.value += 30 - timerSeconds.value
+  totalTime += 30 - timerSeconds.value
 }
 
 function getHorizontalDistance() {
@@ -264,7 +267,10 @@ async function startNextRound() {
   console.log('image: ', image.value)
   if (isUndefined(image.value)) {
     await sendData()
+    UserInfo.value.corrects = correctGuesses
+    UserInfo.value.scores = roundScores
     // show result here
+    router.push('/score')
     return
   }
   if (image.value) {
@@ -291,6 +297,8 @@ onMounted(async () => {
 
 onUnmounted(() => {
   clearInterval(timerInterval)
+  guessIndex.value = 0
+  resetGuessedImageSet()
 })
 </script>
 

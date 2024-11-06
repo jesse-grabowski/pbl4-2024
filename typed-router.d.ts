@@ -22,5 +22,7 @@ declare module 'vue-router/auto-routes' {
     'game': RouteRecordInfo<'game', '/game', Record<never, never>, Record<never, never>>,
     'home': RouteRecordInfo<'home', '/home', Record<never, never>, Record<never, never>>,
     'leaderboard': RouteRecordInfo<'leaderboard', '/leaderboard', Record<never, never>, Record<never, never>>,
+    'score': RouteRecordInfo<'score', '/score', Record<never, never>, Record<never, never>>,
+    'settings': RouteRecordInfo<'settings', '/settings', Record<never, never>, Record<never, never>>,
   }
 }

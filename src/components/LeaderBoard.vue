@@ -3,17 +3,23 @@ import { LeaderboardCredential } from '@/data/leaderboard-credential'
 import type { GameRecord } from '../models/record'
 
 const url = LeaderboardCredential.url
-
-const topscores = ref<GameRecord[]>([])
+const topscores = ref<GameRecord[]>()
 
 async function fetchData() {
   const response = await fetch(url)
   const data = await response.json()
 
   topscores.value = data.result
-    .map((record: GameRecord) => {
-      const [date, time, score, campus] = String(record.score).split(',')
-      return { user: record.user, score: Number(score), date: date, time: time, campus: campus }
+    .map((result: { user: string; score: string }) => {
+      const [date, time, score, campus] = result.score.split(',')
+      return { user: result.user, score: Number(score), date: date, time: time, campus: campus }
+    })
+    .filter((record: GameRecord) => {
+      const recordDate = new Date(record.date)
+      const cutoffDate = new Date()
+      cutoffDate.setFullYear(cutoffDate.getFullYear() - 1)
+
+      return recordDate >= cutoffDate
     })
     .sort((a: GameRecord, b: GameRecord) => b.score - a.score)
     .slice(0, 10)
@@ -33,7 +39,6 @@ onMounted(async () => {
         <th>Date</th>
         <th>Time</th>
         <th>Score</th>
-        <th>Department</th>
         <th>Campus</th>
       </tr>
     </thead>
@@ -44,7 +49,6 @@ onMounted(async () => {
         <td>{{ record.date }}</td>
         <td>{{ record.time }}</td>
         <td>{{ record.score }}</td>
-        <td>{{ record.department }}</td>
         <td>{{ record.campus }}</td>
       </tr>
     </tbody>
@@ -54,10 +58,14 @@ onMounted(async () => {
 <style>
 #table {
   border: 4px solid black;
-  width: 700px;
-  height: 300px;
+  width: auto;
+  height: 600px;
   overflow-y: auto;
   display: block;
+}
+
+#table th {
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 #table thead,
@@ -69,7 +77,7 @@ tbody {
 #table thead th,
 tbody td {
   border: 1px solid black;
-  width: 10%;
+  width: 7%;
   text-align: left;
 }
 </style>

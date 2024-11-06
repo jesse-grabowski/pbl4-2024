@@ -1,32 +1,28 @@
 <script setup lang="ts">
 import { UserInfo } from '@/data/user-info'
+import router from '@/router'
 
-const Name = UserInfo.name
-const Campus = UserInfo.campus
-
-function saveUserInfo() {
-  UserInfo.name = Name
-  UserInfo.campus = Campus
-  console.log(Campus.value)
+function checkValidName() {
+  if (!UserInfo.value.name) {
+    alert('Please enter your name.')
+  } else {
+    router.push('/game')
+  }
 }
-
-onUnmounted(() => {
-  saveUserInfo()
-})
 </script>
 
 <template>
   <div class="home">
     <div class="content">
       <div class="form">
-        <RouterLink to="/game" class="start">Start Game!</RouterLink>
+        <button class="start" @click="checkValidName">Start Game!</button>
         <label>
           <span class="label">Campus</span>
-          <select class="campus" v-model="Campus">
+          <select class="campus" v-model="UserInfo.campus">
             <option value="OIC">Ritsumeikan OIC</option>
           </select>
         </label>
-        <input class="name" type="text" v-model="Name" placeholder="Enter Name Here" />
+        <input class="name" type="text" v-model="UserInfo.name" placeholder="Enter Name Here" />
       </div>
     </div>
   </div>

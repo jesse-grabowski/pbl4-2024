@@ -1,6 +1,6 @@
-import { ref } from 'vue'
-
-export const UserInfo = {
-  name: ref(''),
-  campus: ref('OIC'),
-}
+export const UserInfo = ref({
+  name: '',
+  campus: 'OIC',
+  scores: {},
+  corrects: 0,
+})

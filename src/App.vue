@@ -19,7 +19,7 @@ import { ModalsContainer } from 'vue-final-modal'
         <ul>
           <li><RouterLink to="/">Home</RouterLink></li>
           <li><RouterLink to="/leaderboard">Leaderboard</RouterLink></li>
-          <li>Settings</li>
+          <li><RouterLink to="/settings">Settings</RouterLink></li>
           <li>Game Information</li>
           <li><RouterLink to="/aboutus">About Us</RouterLink></li>
         </ul>
