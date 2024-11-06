@@ -177,7 +177,7 @@ function evaluate() {
   if (currentRoundScore > maxScore) {
     currentRoundScore = maxScore
   }
-  roundScores[guessIndex.value - 1] = currentRoundScore
+  roundScores[guessIndex.value - 1] = Math.floor(currentRoundScore)
   console.log('current round score: ', currentRoundScore)
 
   if (currentRoundScore > score_boundary && floorDiff == 0) {
