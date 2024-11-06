@@ -32,6 +32,9 @@ const wrongSound = new Audio(WrongGuessSound)
 wrongSound.volume = volume
 wrongSound.loop = false
 
+const buttonText = ref(guessValue?.guessIndex === 10 ? 'SEE RESULTS' : 'NEXT ROUND')
+console.log('round: ', guessValue?.guessIndex)
+
 function playSound(correct: boolean | undefined) {
   const sound = correct ? correctSound : wrongSound
   sound.play()
@@ -99,7 +102,7 @@ const emit = defineEmits<{
       </h2>
       <p>{{ imageValue?.description }}</p>
     </main>
-    <button class="guess-results-modal__next" @click="emit('confirm')">NEXT ROUND</button>
+    <button class="guess-results-modal__next" @click="emit('confirm')" v-text="buttonText"></button>
   </VueFinalModal>
 </template>
 

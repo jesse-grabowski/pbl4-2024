@@ -75,6 +75,7 @@ const guess = computed<Guess | undefined>(() => {
     distance: horizontalDistance,
     time: timerText.value,
     stage: stageText.value,
+    guessIndex: guessIndex.value,
     guessedCoordinate: markerPosition,
     floorDiff: floorDiff,
   }
