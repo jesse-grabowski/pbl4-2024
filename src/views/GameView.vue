@@ -177,6 +177,9 @@ function evaluate() {
   if (currentRoundScore > maxScore) {
     currentRoundScore = maxScore
   }
+  if (currentRoundScore < 0) {
+    currentRoundScore = 0
+  }
   roundScores[guessIndex.value - 1] = Math.floor(currentRoundScore)
   console.log('current round score: ', currentRoundScore)
 
@@ -255,7 +258,7 @@ const { open, close } = useModal({
 
 async function doGuess() {
   if (markerPosition.lat === 0 && markerPosition.lng === 0) {
-    mapExpanded.value = true;
+    mapExpanded.value = true
     return
   } // disable guess when marker not moved
   evaluate()
