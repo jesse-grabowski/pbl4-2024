@@ -21,7 +21,7 @@ import { ModalsContainer } from 'vue-final-modal'
           <li><RouterLink to="/leaderboard">Leaderboard</RouterLink></li>
           <li>Settings</li>
           <li>Game Information</li>
-          <li>About Us</li>
+          <li><RouterLink to="/aboutus">About Us</RouterLink></li>
         </ul>
       </nav>
     </header>
