@@ -2,16 +2,20 @@
 import { UserInfo } from '@/data/user-info'
 import router from '@/router'
 
-onUnmounted(() => {
-  if (router.currentRoute.value.path === '/game' && !UserInfo.value.name) router.replace('/')
-})
+function checkValidName() {
+  if (!UserInfo.value.name) {
+    alert('Please enter your name.')
+  } else {
+    router.push('/game')
+  }
+}
 </script>
 
 <template>
   <div class="home">
     <div class="content">
       <div class="form">
-        <RouterLink to="/game" class="start">Start Game!</RouterLink>
+        <button class="start" @click="checkValidName">Start Game!</button>
         <label>
           <span class="label">Campus</span>
           <select class="campus" v-model="UserInfo.campus">
