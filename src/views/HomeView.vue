@@ -14,16 +14,16 @@ function checkValidName() {
 <template>
   <div class="home">
     <div class="content">
-      <div class="form">
-        <button class="start" @click="checkValidName">Start Game!</button>
+      <form class="form" @submit.prevent="checkValidName">
+        <button type="submit" class="start">Start Game!</button>
         <label>
           <span class="label">Campus</span>
           <select class="campus" v-model="UserInfo.campus">
             <option value="OIC">Ritsumeikan OIC</option>
           </select>
         </label>
-        <input class="name" type="text" v-model="UserInfo.name" placeholder="Enter Name Here" />
-      </div>
+        <input class="name" type="text" v-model="UserInfo.name" placeholder="Enter Name Here" required="true" maxlength="20" pattern="[a-zA-Z ]+"/>
+      </form>
     </div>
   </div>
 </template>

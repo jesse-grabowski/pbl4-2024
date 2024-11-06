@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { SETTINGS } from '@/data/settings-data'
+import router from '@/router'
 
 async function confirm() {
   console.log(
@@ -9,7 +10,7 @@ async function confirm() {
     `EffectsVolume: ${SETTINGS.value.effectsVolume}`,
     `SelectedLanguage: ${SETTINGS.value.selectedLanguage}`,
   )
-  alert('Changes saved!')
+  router.push('/');
 }
 </script>
 
@@ -33,7 +34,7 @@ async function confirm() {
       <span class="slider-value">{{ SETTINGS.effectsVolume }}</span>
 
       <label for="language" class="slider-label">Language</label>
-      <select v-model="SETTINGS.selectedLanguage" class="language-select">
+      <select v-model="SETTINGS.selectedLanguage" class="language-select" disabled="true">
         <option value="English">English</option>
         <option value="Japanese">Japanese</option>
       </select>
@@ -80,30 +81,22 @@ async function confirm() {
   color: white;
   display: grid;
   grid-template-columns: min-content 1fr min-content;
-  grid-template-rows: auto auto;
+  grid-auto-flow: dense;
   align-items: center;
 }
 
 .slider-label {
   font-size: 1.3rem;
-  min-width: 140px;
   text-align: right;
-  margin-right: 1rem;
-}
-
-input[type='range'] {
-  width: 100%;
-  margin: 0 1vw;
+  
 }
 
 .slider-value {
   font-size: 1.2rem;
-  min-width: 40px;
   text-align: right;
 }
 
 .language-select {
-  font-size: 1.2vw;
   background: #333;
   color: white;
   border: none;
@@ -127,5 +120,21 @@ input[type='range'] {
 
 .confirm-button:hover {
   background-color: rgb(2, 159, 2);
+}
+
+@media screen and (max-width: 480px) {
+  .sliders-container {
+    grid-template-columns: min-content 1fr;
+    align-items: center;
+  }
+
+  .slider-label {
+    text-align: left;
+    
+  }
+
+  input[type=range] {
+    grid-column: 1/-1;
+  }
 }
 </style>
