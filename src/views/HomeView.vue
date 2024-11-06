@@ -22,7 +22,7 @@ function checkValidName() {
             <option value="OIC">Ritsumeikan OIC</option>
           </select>
         </label>
-        <input class="name" type="text" v-model="UserInfo.name" placeholder="Enter Name Here" required="true" maxlength="20"/>
+        <input class="name" type="text" v-model="UserInfo.name" placeholder="Enter Name Here" required="true" maxlength="20" pattern="[a-zA-Z ]+"/>
       </form>
     </div>
   </div>

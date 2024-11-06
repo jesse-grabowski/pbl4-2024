@@ -15,34 +15,26 @@ import Leaderboard from '../components/LeaderBoard.vue'
 
 <style scoped>
 .leaderboard {
+  flex-grow: 1;
   background-color: aliceblue;
   background-image: url('@/assets/images/background_oic.jpg');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  flex-grow: 1;
 
   display: grid;
   grid-template-columns: 5rem 1fr 5rem;
-  grid-template-rows: 5rem 5rem 1fr 5rem;
+  grid-template-rows: 5rem 1rem 1fr 5rem;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
 }
+
 .leaderboard::before {
   grid-column: 1/-1;
   grid-row: 1/-1;
 
   background-color: rgba(100, 0, 0, 0.5);
   content: '';
-}
-
-.campuses {
-  color: aliceblue;
-}
-
-.campus-links li:not(:first-of-type) {
-  border-left: 3px solid #404040;
-  padding: 0% 20px;
 }
 
 .board {
@@ -56,9 +48,10 @@ import Leaderboard from '../components/LeaderBoard.vue'
 .title {
   grid-row: 1;
   grid-column: 2;
-  text-align: center;
-  padding-top: 5%;
   color: aliceblue;
-  font-size: 300%;
+  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
