@@ -250,6 +250,7 @@ const { open, close } = useModal({
       selectedFloor.value = '1F'
       if (guessIndex.value >= 2) {
         // routing
+        startNextRound()
       } else {
         startNextRound()
       }
