@@ -38,6 +38,7 @@ function playAgain() {
 <style scoped>
 @media screen and (max-width: 2048px) {
   .game-summary {
+    margin-top: 4rem;
     position: fixed;
     top: 0;
     left: 0;
