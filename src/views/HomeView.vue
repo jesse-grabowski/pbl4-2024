@@ -3,7 +3,7 @@ import { UserInfo } from '@/data/user-info'
 import router from '@/router'
 
 onUnmounted(() => {
-  if (!UserInfo.value.name) router.replace('/')
+  if (router.currentRoute.value.path === '/game' && !UserInfo.value.name) router.replace('/')
 })
 </script>
 
