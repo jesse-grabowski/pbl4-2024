@@ -36,135 +36,108 @@ function playAgain() {
 </template>
 
 <style scoped>
-@media screen and (max-width: 2048px) {
-  .game-summary {
-    margin-top: 4rem;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: black;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    font-family: Arial, sans-serif;
-    overflow-y: auto;
-    box-sizing: border-box;
-  }
+.game-summary {
+  background-color: black;
+  flex-grow: 1;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+}
 
-  .congratulations-message,
-  .summary-table {
-    max-width: 800px;
-    width: 90%;
-  }
+.congratulations-message,
+.summary-table {
+  max-width: 800px;
+  width: 90%;
+}
 
-  .congratulations-message {
-    font-size: 2rem;
-    background-color: rgba(60, 60, 60, 0.9);
-    padding: 1.5rem;
-    border-radius: 10px;
-    margin-bottom: 3rem;
-    text-align: center;
-  }
+.congratulations-message {
+  font-size: 2rem;
+  background-color: rgba(60, 60, 60, 0.9);
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 3rem;
+  text-align: center;
+}
 
-  .player-name,
-  .correct-guesses,
-  .total-points {
-    color: limegreen;
-    font-weight: bold;
-  }
+.player-name,
+.correct-guesses,
+.total-points {
+  color: limegreen;
+  font-weight: bold;
+}
 
-  .summary-table {
-    background-color: rgba(50, 50, 50, 0.9);
-    padding: 2rem;
-    border-radius: 10px;
-    margin-bottom: 3rem;
-  }
+.summary-table {
+  background-color: rgba(50, 50, 50, 0.9);
+  padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 3rem;
+}
 
-  .summary-title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin-bottom: 1.5rem;
-    text-align: center;
-  }
+.summary-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
 
-  .round-details {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
+.round-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
 
-  .round-score {
-    font-size: 1.5rem;
-    padding: 1rem;
-    background-color: rgba(100, 100, 150, 0.9);
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-  }
+.round-score {
+  font-size: 1.5rem;
+  padding: 1rem;
+  background-color: rgba(100, 100, 150, 0.9);
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+}
 
-  .score {
-    font-weight: bold;
-    color: white;
-  }
+.score {
+  font-weight: bold;
+  color: white;
+}
 
-  .final-score-label {
-    font-weight: bold;
-    font-size: 1.5rem;
-  }
+.final-score-label {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
 
-  .final-score {
-    color: limegreen;
-    font-weight: bold;
-    font-size: 1.5rem;
-  }
+.final-score {
+  color: limegreen;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
 
-  .play-again-button {
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    padding: 1rem 2rem;
-    font-size: 1.5rem;
-    font-family: Arial, sans-serif;
-    font-weight: bold;
-    background-color: white;
-    color: black;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    z-index: 2;
-  }
+.play-again-button {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  z-index: 2;
+}
 
-  .play-again-button:hover {
-    background-color: gray;
-    color: white;
-  }
+.play-again-button:hover {
+  background-color: gray;
+  color: white;
 }
 
 @media screen and (max-width: 480px) {
-  .game-summary {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: black;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: rem;
-    font-family: Arial, sans-serif;
-    overflow-y: auto;
-    box-sizing: border-box;
-  }
-
   .congratulations-message,
   .summary-table {
     max-width: 800px;

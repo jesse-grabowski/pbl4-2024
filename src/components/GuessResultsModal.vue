@@ -209,7 +209,7 @@ const emit = defineEmits<{
 @media screen and (max-width: 1024px) {
   .guess-results-modal__content {
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 4.5rem 1fr 4.5rem;
+    grid-template-rows: 4.5rem 4.5rem 1fr;
   }
 
   .guess-results-modal__timer {
@@ -223,11 +223,11 @@ const emit = defineEmits<{
   }
 
   .guess-results-modal__content--main {
-    grid-row: 2;
+    grid-row: 3;
     grid-column: 1/-1;
 
     display: flex;
-    gap: 10px;
+    gap: 2rem;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -242,7 +242,7 @@ const emit = defineEmits<{
     clip-path: polygon(0 0, 95% 0, 100% 50%, 95% 100%, 0 100%);
     padding-right: 15%;
     margin: 10px;
-    grid-row: 3;
+    grid-row: 2;
     grid-column: 1/-1;
   }
 }

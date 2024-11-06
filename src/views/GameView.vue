@@ -255,6 +255,7 @@ const { open, close } = useModal({
 
 async function doGuess() {
   if (markerPosition.lat === 0 && markerPosition.lng === 0) {
+    mapExpanded.value = true;
     return
   } // disable guess when marker not moved
   evaluate()

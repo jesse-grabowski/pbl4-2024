@@ -41,7 +41,6 @@ import Leaderboard from '../components/LeaderBoard.vue'
   color: aliceblue;
   grid-row: 3;
   grid-column: 2;
-  margin: 0;
   background-color: rgba(169, 187, 212, 0.68);
 }
 
