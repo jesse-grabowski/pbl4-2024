@@ -36,7 +36,7 @@ function playAgain() {
 </template>
 
 <style scoped>
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 2048px) {
   .game-summary {
     position: fixed;
     top: 0;
