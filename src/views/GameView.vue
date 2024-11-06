@@ -14,6 +14,9 @@ import { getRandomImage, resetGuessedImageSet } from '@/utils/image-support'
 import { isUndefined, sum } from 'es-toolkit'
 import { UserInfo } from '@/data/user-info'
 import { LeaderboardCredential } from '@/data/leaderboard-credential'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const url = LeaderboardCredential.url
 
@@ -271,6 +274,7 @@ async function startNextRound() {
     UserInfo.value.corrects = correctGuesses
     UserInfo.value.scores = roundScores
     // show result here
+    router.push('/score')
     return
   }
   if (image.value) {
