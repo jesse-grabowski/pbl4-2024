@@ -55,11 +55,12 @@ function playAgain() {
 }
 
 .congratulations-message {
+  margin-top: 3rem;
   font-size: 2rem;
   background-color: rgba(60, 60, 60, 0.9);
-  padding: 1.5rem;
+  padding: 0.75rem;
   border-radius: 10px;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
   text-align: center;
 }
 
@@ -72,7 +73,10 @@ function playAgain() {
 
 .summary-table {
   background-color: rgba(50, 50, 50, 0.9);
-  padding: 2rem;
+  padding-top: 0.5rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 1rem;
   border-radius: 10px;
   margin-bottom: 3rem;
 }
@@ -80,7 +84,7 @@ function playAgain() {
 .summary-title {
   font-size: 1.8rem;
   font-weight: bold;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   text-align: center;
 }
 
