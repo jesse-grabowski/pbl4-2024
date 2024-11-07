@@ -172,7 +172,7 @@ function evaluate() {
     currentRoundScore = 0
   } else {
     const actualDistance = Math.sqrt(Math.pow(horizontalDistance, 2) + Math.pow(5 * floorDiff, 2))
-    currentRoundScore = (maxScore - (actualDistance * maxScore) / distanceForZeroScore) * (timerSeconds.value / 10)
+    currentRoundScore = (maxScore - (actualDistance * maxScore) / distanceForZeroScore) * (timerSeconds.value / 29)
   }
   if (currentRoundScore > maxScore) {
     currentRoundScore = maxScore
